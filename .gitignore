@@ -46,3 +46,7 @@ Project_Coding_Musicians_2022/x64/Debug/Project_Coding_Musicians_2022.log
 *.pdb
 *.txt
 *.idb
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
