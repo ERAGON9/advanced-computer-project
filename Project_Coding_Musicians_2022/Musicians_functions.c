@@ -149,3 +149,13 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 		}
 	}
 }
+
+//void printMusiciansCollection(Musician*** coll, int size) {
+//	for (int i = 0; i < size; i++) {
+//		printf("%d", i);
+//		for (int j = 0; j < size; j++) {
+//			printf("%s ", coll[i][j]->name);
+//		}
+//		printf("/n");
+//	}
+//}
