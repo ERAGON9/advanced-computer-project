@@ -2,12 +2,12 @@
 
 #include "Instrument_header.h"
 
-#define INITIAL 2
+
 
 typedef struct
 {
-	unsigned short insId; 
-	float price; 
+	unsigned short insId; // the instrument id
+	float price;          // the price for play this instrument
 
 } MusicianPriceInstrument;
 
@@ -27,8 +27,8 @@ typedef struct mpilist // -+
 
 typedef struct
 {
-	char** name; 
-	MPIList instruments; 
+	char** name; // array of names (array of strings)
+	MPIList instruments; // List of instruments (List of MusicianPriceInstrument)
 
 } Musician;
 

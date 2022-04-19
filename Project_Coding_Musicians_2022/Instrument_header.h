@@ -10,6 +10,7 @@
 #define LOWER_A 'a'
 #define UPPER_A 'A'
 #define EROR -1
+#define INITIAL 2
 
 typedef struct treeNode
 {

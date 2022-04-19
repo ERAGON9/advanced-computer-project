@@ -10,9 +10,10 @@ void checkAllocation(void* ptr)
 	}
 }
 
-//This function creates and returns a binary search tree (while each of its nodes' data is
+//This function creates and returns a binary search tree (while each of its nodes data is
 //a line from the given text file).
-InstrumentTree buildInstrumentsTree(FILE* text, int* count) {
+InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
+{
 	int size, counter = 0;
 	InstrumentTree res;
 
@@ -60,7 +61,8 @@ char** sortedInstrumentsArr(FILE* txt, int* counter) {
 }
 
 //This function lexicographically sorts a given array of strings recorsively.
-void mergeInstruments(char** arr, int size) {
+void mergeInstruments(char** arr, int size) 
+{
 	char** tmpArr = NULL;
 	if (size <= 1)
 		return;
@@ -111,14 +113,19 @@ void merge(char** a1, int n1, char** a2, int n2, char** res)
 //This function checks if a given string ('s1') starts with upper or lower case,
 //and changes the second given string ('s2') to have its first letter mutch the case
 //of s1's first letter (upper/lower) accordingly.
-void upperLowerCase(char* s1, char* s2) {
-	if (s1[0] >= LOWER_A) {
-		if (s2[0] < LOWER_A) {
+void upperLowerCase(char* s1, char* s2) 
+{
+	if (s1[0] >= LOWER_A) 
+	{
+		if (s2[0] < LOWER_A) 
+		{
 			s2[0] = s2[0] + (LOWER_A - UPPER_A);
 		}
 	}
-	else {
-		if (s2[0] >= LOWER_A) {
+	else 
+	{
+		if (s2[0] >= LOWER_A) 
+		{
 			s2[0] = s2[0] - (LOWER_A - UPPER_A);
 		}
 	}
@@ -134,8 +141,10 @@ void copyArr(char** dest, char** src, int size)
 }
 
 //This function creates a binary search tree of a given sorted array of strings.
-TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id) {
-	if (left > right) {
+TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id) 
+{
+	if (left > right) 
+	{
 		return NULL;
 	}
 
@@ -149,7 +158,8 @@ TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id) {
 
 //This function creates a new TreeNode and insert it with the given data (and NULL as its
 //left and right nodes). The function returns the newly created TreeNode.
-TreeNode* newTreeNode(char* data, int* Id) {
+TreeNode* newTreeNode(char* data, int* Id) 
+{
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
 	checkAllocation(res);
 
@@ -162,14 +172,14 @@ TreeNode* newTreeNode(char* data, int* Id) {
 }
 
 // The function get a tree of instruments and a string (instrument name).
-//It's return the insid of the instrument or EROR(-1) if not found.
+// It's return the insid of the instrument or EROR(-1) if not found.
 int findInsId(InstrumentTree tree, char* instrument)
 {
 	findInsIdRec(tree.root, instrument);
 }
 
 // The function get a treeNode of instrument (the root at the start) and a string (instrument name).
-//It's a recursive function that find the instrument insid and return it.
+// It's a recursive function that find the instrument insid and return it.
 int findInsIdRec(TreeNode* trNode, char* instrument)
 {
 	if (trNode == NULL)
