@@ -18,8 +18,6 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 
 	char** arr = sortedInstrumentsArr(text, &size);
 
-	//res.root = buildInstrumentsTreeRec(arr, 0, size - 1, &counter);
-
 	TreeNode* trNode = newTreeNode(arr[Zero], Zero);
 	res.root = trNode;
 
@@ -28,7 +26,6 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 		addNodeToBinaryTree(res, arr[i], i);
 	}
 
-	//*count = counter;
 	*count = (i - 1);
 
 	return res;
@@ -61,19 +58,21 @@ char** sortedInstrumentsArr(FILE* txt, int* counter) {
 	checkAllocation(instList);
 
 	*counter = lSize;
-	//mergeInstruments(instList, lSize);
 
 	return instList;
 }
 
-
-void addNodeToBinaryTree(InstrumentTree res, char* string, int i)
+// The function get instrument tree (res), the string to enter and a integer instrument id.
+// It's add to the binary tree new node in the correct place with the data (string) and the instrument id (id).
+void addNodeToBinaryTree(InstrumentTree res, char* string, int id)
 {
 
-	addNodeToBinaryTreeRec(res.root, string, i);
+	addNodeToBinaryTreeRec(res.root, string, id);
 
 }
 
+// The function get tree node (at the first call it's the root of the tree), the string to enter (data) and a integer instrument id (id).
+// It's a recursive function that add to the binary tree new node in the correct place with the string (data) and the instrument id (id).
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 {
 	int compare = strcmp(data, trNode->instrument);
@@ -96,101 +95,6 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 			addNodeToBinaryTreeRec(trNode->right, data, id);
 		else
 			addNodeToBinaryTreeRec(trNode->left, data, id);
-	}
-}
-
-
-// This function lexicographically sorts a given array of strings recorsively.
-void mergeInstruments(char** arr, int size) 
-{
-	char** tmpArr = NULL;
-	if (size <= 1)
-		return;
-
-	mergeInstruments(arr, size / 2);
-	mergeInstruments(arr + size / 2, size - size / 2);
-
-	tmpArr = (char**)malloc(sizeof(char*) * size);
-	checkAllocation(tmpArr);
-
-	merge(arr, size / 2, arr + size / 2, size - size / 2, tmpArr);
-	copyArr(arr, tmpArr, size);
-	free(tmpArr);
-}
-
-// This function merges two given lexicographically sorted arrays into one sorted array ('res').
-void merge(char** a1, int n1, char** a2, int n2, char** res)
-{
-	int ind1 = 0, ind2 = 0, resInd = 0;
-
-	while ((ind1 < n1) && (ind2 < n2)) {
-		upperLowerCase(a2[ind2], a1[ind1]);
-
-		if (strcmp(a2[ind2], a1[ind1]) > 0) {
-			res[resInd] = a1[ind1];
-			ind1++;
-		}
-		else {
-			res[resInd] = a2[ind2];
-			ind2++;
-		}
-		resInd++;
-	}
-
-	while (ind1 < n1) {
-		res[resInd] = a1[ind1];
-		ind1++;
-		resInd++;
-	}
-	while (ind2 < n2) {
-		res[resInd] = a2[ind2];
-		ind2++;
-		resInd++;
-	}
-}
-
-// This function checks if a given string ('s1') starts with upper or lower case,
-// and changes the second given string ('s2') to have its first letter mutch the case
-// of s1's first letter (upper/lower) accordingly.
-void upperLowerCase(char* s1, char* s2) 
-{
-	if (s1[0] >= LOWER_A) 
-	{
-		if (s2[0] < LOWER_A) 
-			s2[0] = s2[0] + (LOWER_A - UPPER_A);
-	}
-	else 
-	{
-		if (s2[0] >= LOWER_A) 
-			s2[0] = s2[0] - (LOWER_A - UPPER_A);
-	}
-}
-
-// This function copys the given 'src' array's data into the given 'dest' array.
-void copyArr(char** dest, char** src, int size)
-{
-	int i;
-
-	for (i = 0; i < size; i++)
-		dest[i] = src[i];
-}
-
-// This function creates a binary search tree of a given sorted array of strings.
-TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id) 
-{
-	if (left > right) 
-	{
-		return NULL;
-	}
-
-	else
-	{
-		int mid = (left + right) / 2;
-		TreeNode* root = newTreeNode(arr[mid], id);
-		root->left = buildInstrumentsTreeRec(arr, left, mid - 2, id);
-		root->right = buildInstrumentsTreeRec(arr, mid + 2, right, id);
-
-		return root;
 	}
 }
 

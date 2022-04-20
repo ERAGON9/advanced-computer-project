@@ -152,10 +152,10 @@ bool isInstrument(InstrumentTree instTree, char* string)
 
 
 
-//This function create an array of arrays, each of them contain a pointer to a musician, while 
-//the number of arrays equals the number of available instruments (from the instrumenTree).
-//Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
-//To all the musicians which can use that instrument.
+// This function create an array of arrays, each of them contain a pointer to a musician, while 
+// the number of arrays equals the number of available instruments (from the instrumenTree).
+// Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
+// To all the musicians which can use that instrument.
 Musician*** constructMCollection(int iSize, Musician** group, int mSize) 
 {
 	int logSize, phySize;

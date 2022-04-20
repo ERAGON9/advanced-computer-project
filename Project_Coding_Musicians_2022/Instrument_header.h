@@ -37,19 +37,9 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count);
 
 char** sortedInstrumentsArr(FILE* txt, int* counter);
 
-void addNodeToBinaryTree(InstrumentTree res, char* string, int i);
+void addNodeToBinaryTree(InstrumentTree res, char* string, int id);
 
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);
-
-void mergeInstruments(char** arr, int size);
-
-void merge(char** a1, int n1, char** a2, int n2, char** res);
-
-void upperLowerCase(char* s1, char* s2);
-
-void copyArr(char** dest, char** src, int size);
-
-TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id);
 
 TreeNode* newTreeNode(char* data, int* Id);
 
