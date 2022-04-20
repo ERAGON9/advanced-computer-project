@@ -1,6 +1,6 @@
 #include "Instrument_header.h"
 
-//This function checks if the memory allocation has failed.
+// This function checks if the memory allocation has failed.
 void checkAllocation(void* ptr)
 {
 	if (ptr == NULL)
@@ -10,57 +10,97 @@ void checkAllocation(void* ptr)
 	}
 }
 
-//This function creates and returns a binary search tree (while each of its nodes data is
-//a line from the given text file).
+// This function creates and returns a binary search tree (while each of its nodes data is a line from the given text file).
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
 {
-	int size, counter = 0;
+	int size, counter = Zero, i;
 	InstrumentTree res;
 
 	char** arr = sortedInstrumentsArr(text, &size);
-	res.root = buildInstrumentsTreeRec(arr, 0, size - 1, &counter);
-	*count = counter;
+
+	//res.root = buildInstrumentsTreeRec(arr, 0, size - 1, &counter);
+
+	TreeNode* trNode = newTreeNode(arr[Zero], Zero);
+	res.root = trNode;
+
+	for (i = 1; i < size; i++)
+	{
+		addNodeToBinaryTree(res, arr[i], i);
+	}
+
+	//*count = counter;
+	*count = (i - 1);
 
 	return res;
 }
 
-//This functions creates a lexicographically sorted array of strings of a given text file lines
-//(each line in the given text file is a string in the returned array).
+// This functions creates a lexicographically sorted array of strings of a given text file lines
+// (each line in the given text file is a string in the returned array).
 char** sortedInstrumentsArr(FILE* txt, int* counter) {
 	char** instList = (char**)malloc(sizeof(char*));
 	checkAllocation(instList);
-	int lSize = 0, pSize = 1;
+	int lSize = Zero, pSize = 1;
 
 	instList[lSize] = (char*)malloc(sizeof(char) * MAX_LINE);
-	checkAllocation(instList);
+	checkAllocation(instList[lSize]);
 
 	while (fgets(instList[lSize], MAX_LINE, txt) != NULL) {
 		lSize++;
 
-		if (lSize >= pSize) {
+		if (lSize == pSize) {
 			pSize *= 2;
 			instList = (char**)realloc(instList, sizeof(char*) * pSize);
 			checkAllocation(instList);
 		}
 
 		instList[lSize] = (char*)malloc(sizeof(char) * MAX_LINE);
-		checkAllocation(instList);
+		checkAllocation(instList[lSize]);
 	}
 
-	lSize--;
-
-	if (lSize < pSize) {
-		instList = (char**)realloc(instList, sizeof(char*) * lSize);
-		checkAllocation(instList);
-	}
+	instList = (char**)realloc(instList, sizeof(char*) * lSize);
+	checkAllocation(instList);
 
 	*counter = lSize;
-	mergeInstruments(instList, lSize);
+	//mergeInstruments(instList, lSize);
 
 	return instList;
 }
 
-//This function lexicographically sorts a given array of strings recorsively.
+
+void addNodeToBinaryTree(InstrumentTree res, char* string, int i)
+{
+
+	addNodeToBinaryTreeRec(res.root, string, i);
+
+}
+
+void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
+{
+	int compare = strcmp(data, trNode->instrument);
+
+	if (trNode == NULL)
+		return;
+	else if (compare > Zero && trNode->right == NULL)
+	{
+		TreeNode* newNode = newTreeNode(data, id);
+		trNode->right = newNode;
+	}
+	else if (compare < Zero && trNode->left == NULL)
+	{
+		TreeNode* newNode = newTreeNode(data, id);
+		trNode->left = newNode;
+	}
+	else
+	{
+		if (compare > Zero)
+			addNodeToBinaryTreeRec(trNode->right, data, id);
+		else
+			addNodeToBinaryTreeRec(trNode->left, data, id);
+	}
+}
+
+
+// This function lexicographically sorts a given array of strings recorsively.
 void mergeInstruments(char** arr, int size) 
 {
 	char** tmpArr = NULL;
@@ -70,7 +110,7 @@ void mergeInstruments(char** arr, int size)
 	mergeInstruments(arr, size / 2);
 	mergeInstruments(arr + size / 2, size - size / 2);
 
-	tmpArr = (char**)malloc(size * sizeof(char*));
+	tmpArr = (char**)malloc(sizeof(char*) * size);
 	checkAllocation(tmpArr);
 
 	merge(arr, size / 2, arr + size / 2, size - size / 2, tmpArr);
@@ -78,11 +118,10 @@ void mergeInstruments(char** arr, int size)
 	free(tmpArr);
 }
 
-//This function merges two given lexicographically sorted arrays into one sorted array ('res').
+// This function merges two given lexicographically sorted arrays into one sorted array ('res').
 void merge(char** a1, int n1, char** a2, int n2, char** res)
 {
-	int ind1, ind2, resInd;
-	ind1 = ind2 = resInd = 0;
+	int ind1 = 0, ind2 = 0, resInd = 0;
 
 	while ((ind1 < n1) && (ind2 < n2)) {
 		upperLowerCase(a2[ind2], a1[ind1]);
@@ -110,28 +149,24 @@ void merge(char** a1, int n1, char** a2, int n2, char** res)
 	}
 }
 
-//This function checks if a given string ('s1') starts with upper or lower case,
-//and changes the second given string ('s2') to have its first letter mutch the case
-//of s1's first letter (upper/lower) accordingly.
+// This function checks if a given string ('s1') starts with upper or lower case,
+// and changes the second given string ('s2') to have its first letter mutch the case
+// of s1's first letter (upper/lower) accordingly.
 void upperLowerCase(char* s1, char* s2) 
 {
 	if (s1[0] >= LOWER_A) 
 	{
 		if (s2[0] < LOWER_A) 
-		{
 			s2[0] = s2[0] + (LOWER_A - UPPER_A);
-		}
 	}
 	else 
 	{
 		if (s2[0] >= LOWER_A) 
-		{
 			s2[0] = s2[0] - (LOWER_A - UPPER_A);
-		}
 	}
 }
 
-//This function copys the given 'src' array's data into the given 'dest' array.
+// This function copys the given 'src' array's data into the given 'dest' array.
 void copyArr(char** dest, char** src, int size)
 {
 	int i;
@@ -140,7 +175,7 @@ void copyArr(char** dest, char** src, int size)
 		dest[i] = src[i];
 }
 
-//This function creates a binary search tree of a given sorted array of strings.
+// This function creates a binary search tree of a given sorted array of strings.
 TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id) 
 {
 	if (left > right) 
@@ -148,16 +183,19 @@ TreeNode* buildInstrumentsTreeRec(char** arr, int left, int right, int* id)
 		return NULL;
 	}
 
-	int mid = (left + right) / 2;
-	TreeNode* root = newTreeNode(arr[mid], id);
-	root->left = buildInstrumentsTreeRec(arr, left, mid - 1, id);
-	root->right = buildInstrumentsTreeRec(arr, mid + 1, right, id);
+	else
+	{
+		int mid = (left + right) / 2;
+		TreeNode* root = newTreeNode(arr[mid], id);
+		root->left = buildInstrumentsTreeRec(arr, left, mid - 2, id);
+		root->right = buildInstrumentsTreeRec(arr, mid + 2, right, id);
 
-	return root;
+		return root;
+	}
 }
 
-//This function creates a new TreeNode and insert it with the given data (and NULL as its
-//left and right nodes). The function returns the newly created TreeNode.
+// This function creates a new TreeNode and insert it with the given data (and NULL as its left and right nodes).
+// The function returns the newly created TreeNode.
 TreeNode* newTreeNode(char* data, int* Id) 
 {
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));

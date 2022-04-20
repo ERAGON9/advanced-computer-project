@@ -81,7 +81,7 @@ Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 	checkAllocation(musician);
 
 	(*namePhysicSize) = INITIAL;
-	(*nameLogicSize) = 0;
+	(*nameLogicSize) = Zero;
 
 	musician->name = (char**)malloc(sizeof(char*) * (*namePhysicSize));
 	checkAllocation(musician->name);
