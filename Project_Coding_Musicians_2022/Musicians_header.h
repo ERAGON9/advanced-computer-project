@@ -49,6 +49,6 @@ MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
 
 bool isInstrument(InstrumentTree instTree, char* string);
 
-Musician*** constructMCollection(int iSize, Musician** group, int mSize);
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize);
 
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);

@@ -13,12 +13,12 @@ void checkAllocation(void* ptr)
 // This function creates and returns a binary search tree (while each of its nodes data is a line from the given text file).
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
 {
-	int size, counter = Zero, i;
+	int size, counter = ZERO, i;
 	InstrumentTree res;
 
 	char** arr = sortedInstrumentsArr(text, &size);
 
-	TreeNode* trNode = newTreeNode(arr[Zero], Zero);
+	TreeNode* trNode = newTreeNode(arr[ZERO], ZERO);
 	res.root = trNode;
 
 	for (i = 1; i < size; i++)
@@ -34,9 +34,9 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 // This functions creates a lexicographically sorted array of strings of a given text file lines
 // (each line in the given text file is a string in the returned array).
 char** sortedInstrumentsArr(FILE* txt, int* counter) {
-	char** instList = (char**)malloc(sizeof(char*));
+	char** instList = (char**)malloc(sizeof(char*) * INITIAL);
 	checkAllocation(instList);
-	int lSize = Zero, pSize = 1;
+	int lSize = ZERO, pSize = INITIAL;
 
 	instList[lSize] = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(instList[lSize]);
@@ -79,19 +79,19 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 
 	if (trNode == NULL)
 		return;
-	else if (compare > Zero && trNode->right == NULL)
+	else if (compare > ZERO && trNode->right == NULL)
 	{
 		TreeNode* newNode = newTreeNode(data, id);
 		trNode->right = newNode;
 	}
-	else if (compare < Zero && trNode->left == NULL)
+	else if (compare < ZERO && trNode->left == NULL)
 	{
 		TreeNode* newNode = newTreeNode(data, id);
 		trNode->left = newNode;
 	}
 	else
 	{
-		if (compare > Zero)
+		if (compare > ZERO)
 			addNodeToBinaryTreeRec(trNode->right, data, id);
 		else
 			addNodeToBinaryTreeRec(trNode->left, data, id);
@@ -100,14 +100,13 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 
 // This function creates a new TreeNode and insert it with the given data (and NULL as its left and right nodes).
 // The function returns the newly created TreeNode.
-TreeNode* newTreeNode(char* data, int* Id) 
+TreeNode* newTreeNode(char* data, int Id) 
 {
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
 	checkAllocation(res);
 
 	res->instrument = data;
-	res->insId = *Id;
-	(*Id)++;
+	res->insId = Id;
 	res->left = res->right = NULL;
 
 	return res;
@@ -131,13 +130,13 @@ int findInsIdRec(TreeNode* trNode, char* instrument)
 	{
 		int compare = strcmp(instrument, trNode->instrument);
 
-		if (compare == 0)
+		if (compare == ZERO)
 			return trNode->insId;
 
-		else if (compare > 0)
+		else if (compare > ZERO)
 			return findInsIdRec(trNode->right, instrument);
 
-		else // compare < 0
+		else // compare < ZERO
 			return findInsIdRec(trNode->left, instrument);
 	}
 }

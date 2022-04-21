@@ -81,7 +81,7 @@ Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 	checkAllocation(musician);
 
 	(*namePhysicSize) = INITIAL;
-	(*nameLogicSize) = Zero;
+	(*nameLogicSize) = ZERO;
 
 	musician->name = (char**)malloc(sizeof(char*) * (*namePhysicSize));
 	checkAllocation(musician->name);
@@ -141,55 +141,44 @@ bool isInstrument(InstrumentTree instTree, char* string)
 }
 
 
-
-
-
-
-
-
-
-//task 4.........
-
-
-
-// This function create an array of arrays, each of them contain a pointer to a musician, while 
-// the number of arrays equals the number of available instruments (from the instrumenTree).
+// This function create an array of arrays, each of them contain a pointer to a musician,
+// while the number of arrays equals the number of available instruments (from the instrumenTree).
 // Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
-// To all the musicians which can use that instrument.
-Musician*** constructMCollection(int iSize, Musician** group, int mSize) 
+// To all the musicians which can play that instrument.
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize) 
 {
-	int logSize, phySize;
-	Musician*** res = (Musician***)malloc(sizeof(Musician**) * iSize);
-	checkAllocation(res);
+	int logSize, phySize, i, j;
+	Musician*** MusicianCollection = (Musician***)malloc(sizeof(Musician**) * iSize);
+	checkAllocation(MusicianCollection);
 
-	for (int i = 0; i < iSize; i++) 
+	for (i = 0; i < iSize; i++) 
 	{
-		res[i] = NULL;
-		logSize = phySize = 0;
-		for (int j = 0; j < mSize; j++) 
+		MusicianCollection[i] = NULL;
+		logSize = phySize = ZERO;
+
+		for (j = 0; j < mSize; j++) 
 		{
-			checkMusician(group[j], res[i], i, &logSize, &phySize);
+			checkMusician(MusicianGroup[j], MusicianCollection[i], i, &logSize, &phySize);
 		}
 
 		if (phySize > logSize) 
 		{
-			res[i] = (Musician**)realloc(res[i], sizeof(Musician*) * logSize);
-			checkAllocation(res[i]);
+			MusicianCollection[i] = (Musician**)realloc(MusicianCollection[i], sizeof(Musician*) * logSize);
+			checkAllocation(MusicianCollection[i]);
 		}
 	}
 
-	return res;
+	return MusicianCollection;
 }
 
-//This function check if a given instrument's id ('id') matches one of the given musician's 
-//instruments' ids, if it does a pointer to that musician will be added to the given array of
-//pointers to musicians ('arr').
+// This function check if a given instrument's id ('id') matches one of the given musician's 
+// instruments' ids, if it does a pointer to that musician will be added to the given array of pointers to musicians ('arr').
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize) 
 {
 	MPIListNode* curr = player->instruments.head;
 	bool found = false;
 
-	while (curr != NULL || !found) 
+	while (curr != NULL && found == false) 
 	{
 		if (curr->data.insId == id) 
 			found = true;
@@ -197,36 +186,36 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 			curr = curr->next;
 	}
 
-	if (found) 
+	if (found == true) 
 	{
-		if (arr == NULL) 
+		if (arr == NULL) // (*lSize) == ZERO
 		{
-			*lSize = *pSize = 1;
+			*pSize = INITIAL;
 			arr = (Musician**)malloc(sizeof(Musician*) * (*pSize));
 			checkAllocation(arr);
-			arr[*lSize - 1] = player;
 		}
-		else 
+		else if (lSize == pSize)
 		{
-			if (lSize >= pSize) 
-			{
-				*pSize = (*pSize) * 2;
+				(*pSize) *= 2;
 				arr = (Musician**)realloc(arr, sizeof(Musician*) * (*pSize));
 				checkAllocation(arr);
-			}
-
-			arr[*lSize] = player;
-			*lSize = *lSize + 1;
 		}
+		arr[(*lSize)] = player;
+		(*lSize)++;
 	}
 }
 
-//void printMusiciansCollection(Musician*** coll, int size) {
-//	for (int i = 0; i < size; i++) {
+//void printMusiciansCollection(Musician*** coll, int size)
+//{
+//	for (int i = ZERO; i < size; i++)
+//	{
 //		printf("%d", i);
-//		for (int j = 0; j < size; j++) {
+//
+//		for (int j = ZERO; j < size; j++)
+//		{
 //			printf("%s ", coll[i][j]->name);
 //		}
+//
 //		printf("/n");
 //	}
 //}

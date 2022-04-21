@@ -12,7 +12,7 @@
 #define UPPER_A 'A'
 #define EROR -1
 #define INITIAL 2
-#define Zero 0
+#define ZERO 0
 
 
 typedef struct treeNode
@@ -41,7 +41,7 @@ void addNodeToBinaryTree(InstrumentTree res, char* string, int id);
 
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);
 
-TreeNode* newTreeNode(char* data, int* Id);
+TreeNode* newTreeNode(char* data, int Id);
 
 int findInsId(InstrumentTree tree, char* instrument);
 
