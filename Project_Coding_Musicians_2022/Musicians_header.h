@@ -32,5 +32,31 @@ typedef struct
 
 } Musician;
 
-Musician*** constructMCollection(int iSize, Musician** group, int mSize);
+typedef struct
+{
+	Musician* pointer;
+	float askedPrice;
+
+} MusiciansPrices;
+
+Musician** createMusicianArr(FILE* text, InstrumentTree instTree, int* logicSize);
+
+int fillMusicianGroup(Musician*** MusicianGroup, int physicSize, FILE* musiciansFile, InstrumentTree instTree);
+
+void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSize, int* physicSize);
+
+Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize);
+
+void updateNamePhysicSizeArray(Musician* musician, int nameLogicSize, int* namePhysicSize);
+
+void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize);
+
+bool isInstrument(InstrumentTree instTree, char* string);
+
+MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
+
+clearString(char* string);
+
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize);
+
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);

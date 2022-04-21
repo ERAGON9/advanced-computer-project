@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Musicians_header.h"
+#define FALSE_ID -1
+#define NOT_DEFINED -1
 
 typedef struct
 {
@@ -35,7 +37,7 @@ typedef struct
 {
 	Date date_of_concert; 
 	char* name; 
-	CIList instrument; 
+	CIList instruments; 
 
 } Concert;
 
