@@ -35,19 +35,21 @@ typedef struct
 
 Musician** createMusicianArr(FILE* text, InstrumentTree instTree, int* logicSize);
 
-int fillMusicianGroup(Musician*** MusicianGroup, int physicSize, char** musiciansFile, InstrumentTree instTree);
+int fillMusicianGroup(Musician*** MusicianGroup, int physicSize, FILE* musiciansFile, InstrumentTree instTree);
 
-void updateMusicianGroupArray(Musician*** tempMusicianGroup, int logSize, int* physicSize);
+void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSize, int* physicSize);
 
 Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize);
 
-void updateNameArray(Musician* musician, int nameLogicSize, int* namePhysicSize);
+void updateNamePhysicSizeArray(Musician* musician, int nameLogicSize, int* namePhysicSize);
 
 void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize);
 
+bool isInstrument(InstrumentTree instTree, char* string);
+
 MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
 
-bool isInstrument(InstrumentTree instTree, char* string);
+clearString(char* string);
 
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize);
 
