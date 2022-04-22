@@ -209,14 +209,20 @@ clearString(char* string)
 // Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
 // To all the musicians which can play that instrument.
 <<<<<<< HEAD
+<<<<<<< HEAD
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize) 
 =======
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize)
 >>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
+=======
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int** sizes)
+>>>>>>> 9aef0a91132c3ff710fb923f1be7a5831e773ece
 {
 	int logSize, phySize, i, j;
 	Musician*** MusicianCollection = (Musician***)malloc(sizeof(Musician**) * iSize);
 	checkAllocation(MusicianCollection);
+	int* countSizes = (int*)malloc(sizeof(int) * iSize);
+	checkAllocation(countSizes);
 
 <<<<<<< HEAD
 	for (i = 0; i < iSize; i++) 
@@ -241,8 +247,10 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize)
 			MusicianCollection[i] = (Musician**)realloc(MusicianCollection[i], sizeof(Musician*) * logSize);
 			checkAllocation(MusicianCollection[i]);
 		}
+		countSizes[i] = logSize;
 	}
 
+	*sizes = countSizes;
 	return MusicianCollection;
 }
 
