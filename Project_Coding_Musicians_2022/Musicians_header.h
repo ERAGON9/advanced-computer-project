@@ -32,6 +32,15 @@ typedef struct
 
 } Musician;
 
+<<<<<<< HEAD
+=======
+typedef struct
+{
+	Musician* pointer;
+	float askedPrice;
+
+} MusiciansPrices;
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 
 Musician** createMusicianArr(FILE* text, InstrumentTree instTree, int* logicSize);
 

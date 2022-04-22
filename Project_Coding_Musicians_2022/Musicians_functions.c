@@ -35,7 +35,11 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 			if (nameLogicSize <= 1)                                        // the first two words must be the musician name.
 				addMusicianNameToArray(musician, token, &nameLogicSize);
 
+<<<<<<< HEAD
             else{
+=======
+			else {
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 				if (isInstrument(instTree, token) == false)                  // not a instrument, so must be a part from the musician name.
 					addMusicianNameToArray(musician, token, &nameLogicSize);
 				else {                                                       // isInstrument(instTree, token) == true
