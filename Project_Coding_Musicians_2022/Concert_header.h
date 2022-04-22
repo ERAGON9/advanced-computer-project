@@ -35,17 +35,48 @@ typedef struct cilist
 
 typedef struct
 {
-<<<<<<< HEAD
 	Date date_of_concert; // The date of the concert
 	char* name;           // The name of the concert
 	CIList instrument;    // A list of the ConcertInstrument
-=======
-	Date date_of_concert; 
-	char* name; 
-	CIList instruments; 
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 
 } Concert;
 
+void manageConcert(Musician*** players, InstrumentTree inst, int* sizes);
 
+void newConcert(Concert event, InstrumentTree tools);
 
+float convertHour(char* hours, char* minutes);
+
+void makeEmptyList(CIList* new);
+
+CIListNode* insertDataToEndList(CIList* lst, int id, char* sum, char importance);
+
+CIListNode* createNewListNode(int type, int count, char significance, CIListNode* next);
+
+void insertNodeToEndList(CIList* lst, CIListNode* new);
+
+int findId(char* name, InstrumentTree devices);
+
+void findIdRec(TreeNode* root, char* type, int* ID);
+
+void reorderCollection(Concert aEvent, Musician*** artists, int* sizes);
+
+void reorderMusicians(Musician** players, int direction, int size, int id);
+
+void createAidArray(MusiciansPrices* aidArr, Musician** performers, int size, int instId);
+
+int findPrice(int wanted, MPIListNode* head);
+
+void mergeMusicians(MusiciansPrices* aidArr, int size, int direct);
+
+void mergeM(MusiciansPrices* a1, int n1, MusiciansPrices* a2, int n2, MusiciansPrices* res, int importance);
+
+void copyMArr(MusiciansPrices* dest, MusiciansPrices* src, int size);
+
+void insertMusicians(Musician** performers, MusiciansPrices* aidArr, int size);
+
+void setUpConcert(Concert show, Musician*** artists, int* sizes);
+
+bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* pSize);
+
+void printConcert(Concert theEvent);

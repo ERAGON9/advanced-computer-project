@@ -3,17 +3,10 @@
 
 // The function get a text file of musicians information, the instrument tree, and a output parameter logicSize.
 // It's create and set the array of pointers to musicians from the information in the file, return that array and return as output parameter the number of musicians. (logicSize)
-<<<<<<< HEAD
 Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree,int* logicSize)
 {
 	int PhysicSize = INITIAL;
     Musician** MusicianGroup = (Musician**)malloc(sizeof(Musician*) * PhysicSize);
-=======
-Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree, int* logicSize)
-{
-	int PhysicSize = INITIAL;
-	Musician** MusicianGroup = (Musician**)malloc(sizeof(Musician*) * PhysicSize);
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	checkAllocation(MusicianGroup);
 
 	(*logicSize) = fillMusicianGroup(&MusicianGroup, PhysicSize, musiciansFile, instTree);
@@ -26,38 +19,23 @@ Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree, int* 
 int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* musiciansFile, InstrumentTree instTree)
 {
 	int MusiciansLogicSize = ZERO, namePhysicSize, nameLogicSize;
-<<<<<<< HEAD
     Musician** tempMusicianGroup = *MusicianGroup;
     char seps[] = " ,.;:?!-\t'()[]{}<>~_", *token;
-=======
-	Musician** tempMusicianGroup = *MusicianGroup;
-	char seps[] = " ,.;:?!-\t'()[]{}<>~_", * token;
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	char* tempString = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(tempString);
 
 	while (fgets(tempString, MAX_LINE, musiciansFile) != NULL) {
 		updateMusicianGroupPhysicSizeArray(&tempMusicianGroup, MusiciansLogicSize, &MusiciansPhysicSize);
 		Musician* musician = initializeMusician(&namePhysicSize, &nameLogicSize);
-<<<<<<< HEAD
         token = strtok(tempString, seps);
 
         while (token != NULL) {                                            // run on one line (one string)
-=======
-		token = strtok(tempString, seps);
-
-		while (token != NULL) {                                            // run on one line (one string)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 			updateNamePhysicSizeArray(musician, nameLogicSize, &namePhysicSize);
 
 			if (nameLogicSize <= 1)                                        // the first two words must be the musician name.
 				addMusicianNameToArray(musician, token, &nameLogicSize);
 
-<<<<<<< HEAD
             else{
-=======
-			else {
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 				if (isInstrument(instTree, token) == false)                  // not a instrument, so must be a part from the musician name.
 					addMusicianNameToArray(musician, token, &nameLogicSize);
 				else {                                                       // isInstrument(instTree, token) == true
@@ -65,34 +43,20 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 
 					if (musician->instruments.head == NULL)
 						musician->instruments.head = musician->instruments.tail = mpiNode;
-<<<<<<< HEAD
 					else{
-=======
-					else {
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 						musician->instruments.tail->next = mpiNode;
 						musician->instruments.tail = mpiNode;
 					}
 				}
-<<<<<<< HEAD
             }
 			token = strtok(NULL, seps);
         }
-=======
-			}
-			token = strtok(NULL, seps);
-		}
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 		musician->name = (char**)realloc(musician->name, sizeof(char*) * nameLogicSize);
 		checkAllocation(musician->name);
 		tempMusicianGroup[MusiciansLogicSize] = musician;
 		MusiciansLogicSize++;
 		clearString(tempString);
-<<<<<<< HEAD
     }
-=======
-	}
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
 	MusicianGroup = &tempMusicianGroup;
@@ -110,7 +74,6 @@ void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSi
 		checkAllocation(*tempMusicianGroup);
 	}
 }
-<<<<<<< HEAD
 
 // The function get a pointer to the name phisical size and a pointer to the name logic size.
 // It's create new pointer to musician, initialize the musician and return him.
@@ -122,19 +85,6 @@ Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 	(*namePhysicSize) = INITIAL;
 	(*nameLogicSize) = ZERO;
 
-=======
-
-// The function get a pointer to the name phisical size and a pointer to the name logic size.
-// It's create new pointer to musician, initialize the musician and return him.
-Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
-{
-	Musician* musician = (Musician*)malloc(sizeof(Musician));
-	checkAllocation(musician);
-
-	(*namePhysicSize) = INITIAL;
-	(*nameLogicSize) = ZERO;
-
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	musician->name = (char**)malloc(sizeof(char*) * (*namePhysicSize));
 	checkAllocation(musician->name);
 
@@ -208,15 +158,7 @@ clearString(char* string)
 // while the number of arrays equals the number of available instruments (from the instrumenTree).
 // Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
 // To all the musicians which can play that instrument.
-<<<<<<< HEAD
-<<<<<<< HEAD
-Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize) 
-=======
-Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
-=======
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int** sizes)
->>>>>>> 9aef0a91132c3ff710fb923f1be7a5831e773ece
 {
 	int logSize, phySize, i, j;
 	Musician*** MusicianCollection = (Musician***)malloc(sizeof(Musician**) * iSize);
@@ -224,20 +166,12 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 	int* countSizes = (int*)malloc(sizeof(int) * iSize);
 	checkAllocation(countSizes);
 
-<<<<<<< HEAD
 	for (i = 0; i < iSize; i++) 
-=======
-	for (i = 0; i < iSize; i++)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	{
 		MusicianCollection[i] = NULL;
 		logSize = phySize = ZERO;
 
-<<<<<<< HEAD
 		for (j = 0; j < mSize; j++) 
-=======
-		for (j = 0; j < mSize; j++)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 		{
 			checkMusician(MusicianGroup[j], MusicianCollection[i], i, &logSize, &phySize);
 		}
@@ -256,20 +190,12 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 
 // This function check if a given instrument's id ('id') matches one of the given musician's 
 // instruments' ids, if it does a pointer to that musician will be added to the given array of pointers to musicians ('arr').
-<<<<<<< HEAD
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize) 
-=======
-void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 {
 	MPIListNode* curr = player->instruments.head;
 	bool found = false;
 
-<<<<<<< HEAD
 	while (curr != NULL && found == false) 
-=======
-	while (curr != NULL && found == false)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	{
 		if (curr->data.insId == id)
 			found = true;
@@ -277,11 +203,7 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 			curr = curr->next;
 	}
 
-<<<<<<< HEAD
 	if (found == true) 
-=======
-	if (found == true)
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 	{
 		if (arr == NULL) // (*lSize) == ZERO
 		{
@@ -291,15 +213,9 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 		}
 		else if (lSize == pSize)
 		{
-<<<<<<< HEAD
 				(*pSize) *= 2;
 				arr = (Musician**)realloc(arr, sizeof(Musician*) * (*pSize));
 				checkAllocation(arr);
-=======
-			(*pSize) *= 2;
-			arr = (Musician**)realloc(arr, sizeof(Musician*) * (*pSize));
-			checkAllocation(arr);
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 		}
 		arr[(*lSize)] = player;
 		(*lSize)++;

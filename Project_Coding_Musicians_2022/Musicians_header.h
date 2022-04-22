@@ -3,7 +3,6 @@
 #include "Instrument_header.h"
 
 
-
 typedef struct
 {
 	unsigned short insId; // The instrument id
@@ -32,15 +31,14 @@ typedef struct
 
 } Musician;
 
-<<<<<<< HEAD
-=======
+
 typedef struct
 {
 	Musician* pointer;
 	float askedPrice;
 
 } MusiciansPrices;
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
+
 
 Musician** createMusicianArr(FILE* text, InstrumentTree instTree, int* logicSize);
 
@@ -60,10 +58,9 @@ MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
 
 clearString(char* string);
 
-Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize);
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int** sizes);
 
-<<<<<<< HEAD
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
-=======
+
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
->>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
+
