@@ -11,7 +11,11 @@ void checkAllocation(void* ptr)
 }
 
 // This function creates and returns a binary search tree (while each of its nodes data is a line from the given text file).
+<<<<<<< HEAD
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
+=======
+InstrumentTree buildInstrumentsTree(FILE* text, int* count)
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 {
 	int size, counter = ZERO, i;
 	InstrumentTree res;
@@ -100,7 +104,11 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 
 // This function creates a new TreeNode and insert it with the given data (and NULL as its left and right nodes).
 // The function returns the newly created TreeNode.
+<<<<<<< HEAD
 TreeNode* newTreeNode(char* data, int Id) 
+=======
+TreeNode* newTreeNode(char* data, int Id)
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 {
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
 	checkAllocation(res);

@@ -35,9 +35,15 @@ typedef struct cilist
 
 typedef struct
 {
+<<<<<<< HEAD
 	Date date_of_concert; // The date of the concert
 	char* name;           // The name of the concert
 	CIList instrument;    // A list of the ConcertInstrument
+=======
+	Date date_of_concert; 
+	char* name; 
+	CIList instruments; 
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
 
 } Concert;
 

@@ -45,4 +45,8 @@ TreeNode* newTreeNode(char* data, int Id);
 
 int findInsId(InstrumentTree tree, char* instrument);
 
+<<<<<<< HEAD
 int findInsIdRec(TreeNode* trNode, char* instrument);
+=======
+int findInsIdRec(TreeNode* trNode, char* instrument);
+>>>>>>> 06ea239e8c42995fba44915e065c03f62d1e7781
