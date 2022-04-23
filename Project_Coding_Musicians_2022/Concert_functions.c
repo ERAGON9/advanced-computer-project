@@ -3,7 +3,7 @@
 // This function receives concerts' details, and for each concert the function will try to organize the concert based on given requriments.
 // If a concert's execution was successful the function will print the concert's details, including the chosen musicians, the instrument they will be using and the price they ask.
 // Otherwise if a concert's execution wasn't succssesful the function will printf: "Could not find musicians for the concert" and the concert's name.
-void manageConcert(Musician*** players, InstrumentTree inst, int* sizes) 
+void manageConcert(Musician*** players, InstrumentTree inst, int* sizes, TreeNode* root)
 {
 	int counter, i;
 
@@ -16,7 +16,7 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 	{
 		newConcert(allConcerts[i], inst);
 		reorderCollection(allConcerts[i], players, sizes);
-		setUpConcert(allConcerts[i], players, sizes);
+		setUpConcert(allConcerts[i], players, sizes, root);
 	}
 }
 
@@ -165,7 +165,7 @@ void reorderCollection(Concert aEvent, Musician*** artists, int* sizes)
 // This function orders a given list of pointers to musicians ('players'), at an order based on the given 'direction'.
 void reorderMusicians(Musician** players, int direction, int size, int id)
 {
-	MusiciansPrices* tmpArr = (MusiciansPrices*)malloc(sizeof(MusiciansPrices) * size);
+	MusiciansDetails* tmpArr = (MusiciansDetails*)malloc(sizeof(MusiciansDetails) * size);
 	checkAllocation(tmpArr);
 	createAidArray(tmpArr, players, size, id);
 	mergeMusicians(tmpArr, size, direction);
@@ -175,7 +175,7 @@ void reorderMusicians(Musician** players, int direction, int size, int id)
 
 // This function inserts to a given array ('aidArr') pointers to musicians (from 'performers') and the prices
 // those musicians ask for performing with a given instrument ('instId').
-void createAidArray(MusiciansPrices* aidArr, Musician** performers, int size, int instId)
+void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, int instId)
 {
 	for (int i = 0; i < size; i++) 
 	{
@@ -202,10 +202,10 @@ int findPrice(int wanted, MPIListNode* head)
 	return res;
 }
 
-// This function sorts a given array of MusiciansPrices recursively.
-void mergeMusicians(MusiciansPrices* aidArr, int size, int direct)
+// This function sorts a given array of MusiciansDetails recursively.
+void mergeMusicians(MusiciansDetails* aidArr, int size, int direct)
 {
-	MusiciansPrices* tmpArr = NULL;
+	MusiciansDetails* tmpArr = NULL;
 
 	if (size <= 1)
 		return;
@@ -222,8 +222,8 @@ void mergeMusicians(MusiciansPrices* aidArr, int size, int direct)
 	free(tmpArr);
 }
 
-// This funtion merges two array of MusiciansPrices ('a1', 'a2') to a third array ('res') at a chosen order (based on 'importance').
-void mergeM(MusiciansPrices* a1, int n1, MusiciansPrices* a2, int n2, MusiciansPrices* res, int importance)
+// This funtion merges two array of MusiciansDetails ('a1', 'a2') to a third array ('res') at a chosen order (based on 'importance').
+void mergeM(MusiciansDetails* a1, int n1, MusiciansDetails* a2, int n2, MusiciansDetails* res, int importance)
 {
 	int ind1 = 0, ind2 = 0, resInd = 0;
 
@@ -273,7 +273,7 @@ void mergeM(MusiciansPrices* a1, int n1, MusiciansPrices* a2, int n2, MusiciansP
 }
 
 // This function copys a given array's data ('src') to a second given array ('dest').
-void copyMArr(MusiciansPrices* dest, MusiciansPrices* src, int size)
+void copyMArr(MusiciansDetails* dest, MusiciansDetails* src, int size)
 {
 	int i;
 
@@ -282,8 +282,8 @@ void copyMArr(MusiciansPrices* dest, MusiciansPrices* src, int size)
 }
 
 // This function runs on a given list of pointers to musicians ('performers') and inserts 
-// it with pointers to musicians from a given ordered list of MusiciansPrices ('aidArr').
-void insertMusicians(Musician** performers, MusiciansPrices* aidArr, int size)
+// it with pointers to musicians from a given ordered list of MusiciansDetails ('aidArr').
+void insertMusicians(Musician** performers, MusiciansDetails* aidArr, int size)
 {
 	for (int i = 0; i < size; i++) 
 	{
@@ -296,7 +296,7 @@ void insertMusicians(Musician** performers, MusiciansPrices* aidArr, int size)
 // If the function couldn't find a suitable musician, an error message will be printed.
 // Otherwise the function will print the concert details, including its name, date and attending 
 // players including the instrument they will be using and the price they ask for.
-void setUpConcert(Concert show, Musician*** artists, int* sizes)
+void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root)
 {
 	int logSize = ZERO, phySize = 1, i;
 	bool proceed = true;
@@ -315,7 +315,7 @@ void setUpConcert(Concert show, Musician*** artists, int* sizes)
 	if (proceed == false)
 		printf("Could not find musicians for the concert %s", show.name);
 	else // proceed == true
-		printConcert(show, taken, logSize);
+		printConcert(show, taken, logSize, root);
 
 	free(taken);
 }
@@ -332,7 +332,7 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 	{
 		for (j = 0; (j < lSize) && (found == true); j++) 
 		{
-			if (options[i]->name == busy[j].name)
+			if (options[i]->name == busy[j].name) 
 				found = true;
 		}
 
@@ -365,20 +365,72 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 
 // This function prints a given concert's details, including its name, date and attending 
 // players including the instrument they will be using and the price they ask for.
-void printConcert(Concert theEvent) 
+void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* root)
 {
 	int hours = (int)theEvent.date_of_concert.hour;
-	int minutes = (int)(theEvent.date_of_concert.hour) % 1;
+	int minutes = (int)(theEvent.date_of_concert.hour) % 1 * HOUR;
 	CIListNode* curr = theEvent.instrument.head;
+	char* instName;
+	int inx = ZERO, tmpPrice;
 
 	printf("%s ", theEvent.name);
 	printf("%d ", theEvent.date_of_concert.day);
 	printf("%d ", theEvent.date_of_concert.month);
 	printf("%d ", theEvent.date_of_concert.year);
-	printf("%d:%d ", hours, minutes);
+	printf("%d:%d\n", hours, minutes);
 
+	while (curr != NULL)
+	{
+		instName = findInstrumentName(root, curr->data.inst);
 
+		for (int i = inx; i < curr->data.num; inx++, i++) {
+			tmpPrice = findAskedPrice(performers[i], curr->data.inst);
+			printf("%s ", performers[i].name);
+			printf("%s ", instName);
+			printf("%d\n", tmpPrice);
+		}
 
+		curr = curr->next;
+	}
+}
 
+//This function runs recursively on a given tree and searches for a node which it's 'insId'
+//equals to id, and returns the node's 'instrument' (the instrument' name).
+char* findInstrumentName(TreeNode* trNode, int id) {
+	char *left, *right;
+	if (trNode == NULL) {
+		return NULL;
+	}
+	else {
+		if (trNode->insId == id) {
+			return trNode->instrument;
+		}
+		else {
+			left = findInstrumentName(trNode->left, id);
+			right = findInstrumentName(trNode->right, id);
 
+			if (left != NULL) {
+				return left;
+			}
+			else if (right != NULL) {
+				return right;
+			}
+			else {
+				return NULL;
+			}
+		}
+	}
+}
+
+//This function searches for a given instrument ('id' is the instrument's id) in
+//a given musician list of instruments, and returns the asked price by the musician 
+//for performing with this instrument.
+int findAskedPrice(Musician artist, int id) {
+	MPIListNode* curr = artist.instruments.head;
+
+	while (curr != NULL) {
+		if (curr->data.insId == id) 
+			return curr->data.price;
+		
+	}
 }

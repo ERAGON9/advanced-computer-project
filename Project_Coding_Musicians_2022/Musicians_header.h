@@ -37,7 +37,7 @@ typedef struct
 	Musician* pointer;
 	float askedPrice;
 
-} MusiciansPrices;
+} MusiciansDetails;
 
 
 Musician** createMusicianArr(FILE* text, InstrumentTree instTree, int* logicSize);

@@ -3,6 +3,7 @@
 #include "Musicians_header.h"
 #define FALSE_ID -1
 #define NOT_DEFINED -1
+#define HOUR 60
 
 typedef struct
 {
@@ -41,7 +42,7 @@ typedef struct
 
 } Concert;
 
-void manageConcert(Musician*** players, InstrumentTree inst, int* sizes);
+void manageConcert(Musician*** players, InstrumentTree inst, int* sizes, TreeNode* root);
 
 void newConcert(Concert event, InstrumentTree tools);
 
@@ -63,20 +64,24 @@ void reorderCollection(Concert aEvent, Musician*** artists, int* sizes);
 
 void reorderMusicians(Musician** players, int direction, int size, int id);
 
-void createAidArray(MusiciansPrices* aidArr, Musician** performers, int size, int instId);
+void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, int instId);
 
 int findPrice(int wanted, MPIListNode* head);
 
-void mergeMusicians(MusiciansPrices* aidArr, int size, int direct);
+void mergeMusicians(MusiciansDetails* aidArr, int size, int direct);
 
-void mergeM(MusiciansPrices* a1, int n1, MusiciansPrices* a2, int n2, MusiciansPrices* res, int importance);
+void mergeM(MusiciansDetails* a1, int n1, MusiciansDetails* a2, int n2, MusiciansDetails* res, int importance);
 
-void copyMArr(MusiciansPrices* dest, MusiciansPrices* src, int size);
+void copyMArr(MusiciansDetails* dest, MusiciansDetails* src, int size);
 
-void insertMusicians(Musician** performers, MusiciansPrices* aidArr, int size);
+void insertMusicians(Musician** performers, MusiciansDetails* aidArr, int size);
 
-void setUpConcert(Concert show, Musician*** artists, int* sizes);
+void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root);
 
 bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* pSize);
 
-void printConcert(Concert theEvent);
+void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* root);
+
+char* findInstrumentName(TreeNode* trNode, int id);
+
+int findAskedPrice(Musician artist, int id);
