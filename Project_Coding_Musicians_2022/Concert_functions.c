@@ -14,7 +14,7 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 
 	gets(line);
 
-	while (line[ZERO] != '\n') {
+	while (line[ZERO] != EMPTY_ROW) {
 		newConcert(allConcerts[logSize], inst, line);
 		reorderCollection(allConcerts[logSize], players, sizes);
 		setUpConcert(allConcerts[logSize], players, sizes, inst.root);
@@ -464,6 +464,40 @@ void freeConcerts(Concert* allConcerts, int size) {
 }
 
 //This function free all the dynamically allocated memory from the given arrays and tree.
-void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, Musician*** MusiciansCollection) {
+void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount,
+	Musician*** MusiciansCollection, int instCount)
+{
+	MPIListNode *curr, *tmp;
 
+	for (int i = ZERO; i < musiciansCount; i++) {
+		curr = MusiciansGroup[i]->instruments.head;
+
+		while (curr != NULL) {
+			tmp = curr->next;
+			free(curr);
+			curr = tmp;
+		}
+		free(MusiciansGroup[i]);
+	}
+
+	for (int j = 0; j < instCount; j++) {
+		free(MusiciansCollection[j]);
+	}
+
+	free(MusiciansCollection);
+	freeTreeRec(instruments.root);
+}
+
+//This function free a given tree and its nodes recursively.
+void freeTreeRec(TreeNode* root)
+{
+	if (root == NULL)
+		return;
+	else
+	{
+		freeTreeRec(root->left);
+		freeTreeRec(root->right);
+		free(root->instrument);
+		free(root);
+	}
 }
