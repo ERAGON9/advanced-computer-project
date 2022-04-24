@@ -27,6 +27,7 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 	}
 
 	*count = (i - 1);
+	free(arr);
 
 	return res;
 }
@@ -140,3 +141,4 @@ int findInsIdRec(TreeNode* trNode, char* instrument)
 			return findInsIdRec(trNode->left, instrument);
 	}
 }
+

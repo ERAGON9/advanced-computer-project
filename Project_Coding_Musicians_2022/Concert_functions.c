@@ -29,7 +29,7 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 		gets(line);
 	}
 
-	free(allConcerts);
+	//freeConcerts(allConcerts, logSize);
 }
 
 // This function receives a concert's details into 'theEvent'.
@@ -446,6 +446,24 @@ int findAskedPrice(Musician artist, int id) {
 	}
 }
 
-void freeAll() {
+//This dunction free a given list of concerts, and the concerts' instruments lists.
+void freeConcerts(Concert* allConcerts, int size) {
+	CIListNode *curr, *tmp;
+
+	for (int i = ZERO; i < size; i++) {
+		curr = allConcerts->instrument.head;
+
+		while (curr != NULL) {
+			tmp = curr->next;
+			free(curr);
+			curr = tmp;
+		}
+	}
+
+	free(allConcerts);
+}
+
+//This function free all the dynamically allocated memory from the given arrays and tree.
+void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, Musician*** MusiciansCollection) {
 
 }

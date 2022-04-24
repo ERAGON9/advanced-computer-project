@@ -61,6 +61,7 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
 	MusicianGroup = &tempMusicianGroup;
+	free(tempString);
 	return MusiciansLogicSize;            // logic size;
 }
 
@@ -119,7 +120,7 @@ void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize)
 }
 
 //The function gets a instrument tree and a string (named "string").
-// If the string is not a name of a instrument the function returns false, else it returns true.
+// If the string is not a name of an instrument the function returns false, else it returns true.
 bool isInstrument(InstrumentTree instTree, char* string)
 {
 	if (findInsIdRec(instTree.root, string) == EROR)
@@ -129,7 +130,7 @@ bool isInstrument(InstrumentTree instTree, char* string)
 }
 
 // The function gets a pointer to the root of the instruments tree, a string token and a string seps. 
-// It creates new pointer to mpiNode, sets the mpiNode and returns him.
+// It creates a new pointer to mpiNode, sets the mpiNode and returns him.
 MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps)
 {
 	MPIListNode* mpiNode = (MPIListNode*)malloc(sizeof(MPIListNode));

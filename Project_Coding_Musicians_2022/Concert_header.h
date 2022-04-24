@@ -85,3 +85,7 @@ void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* ro
 char* findInstrumentName(TreeNode* trNode, int id);
 
 int findAskedPrice(Musician artist, int id);
+
+void freeConcerts(Concert* allConcerts, int size);
+
+void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, Musician*** MusiciansCollection);
