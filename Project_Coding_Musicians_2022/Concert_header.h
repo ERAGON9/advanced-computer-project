@@ -42,9 +42,9 @@ typedef struct
 
 } Concert;
 
-void manageConcert(Musician*** players, InstrumentTree inst, int* sizes, TreeNode* root);
+void manageConcert(Musician*** players, InstrumentTree inst, int* sizes);
 
-void newConcert(Concert event, InstrumentTree tools);
+void newConcert(Concert theEvent, InstrumentTree tools, char* description);
 
 float convertHour(char* hours, char* minutes);
 

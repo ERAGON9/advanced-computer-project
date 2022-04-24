@@ -9,18 +9,32 @@ Project Coding Musicians
 
 void main()
 {
-    FILE* ptr;
+    FILE *instrumentsFile, *musiciansFile;
     InstrumentTree instruments;
-    int instCount;
-    ptr = fopen("TestyMctestface.txt", "r");
+    int instCount, musiciansCount;
+    Musician** MusiciansGroup;
+    Musician*** MusiciansCollection;
 
-    if (ptr == NULL) 
-    {
+    instrumentsFile = fopen("TestyMctestface.txt", "r");
+
+    if (instrumentsFile == NULL)
         printf("file can't be opened \n");
-    }
 
-    instruments = buildInstrumentsTree(ptr, &instCount);
+    instruments = buildInstrumentsTree(instrumentsFile, &instCount);
+    musiciansFile = fopen("ListOfMusicians.txt", "r");
+
+    if (musiciansFile == NULL)
+        printf("file can't be opened \n");
+
+    int* countSizes = (int*)malloc(sizeof(int) * instCount);
+    checkAllocation(countSizes);
+
+    MusiciansGroup = createMusicianArr(musiciansFile, instruments, &musiciansCount);
+    MusiciansCollection = constructMCollection(instCount, MusiciansGroup, musiciansCount, countSizes);
+    manageConcert(MusiciansCollection, instruments, countSizes);
 
     // freeAll();
-	fclose(ptr);
+    free(countSizes);
+	fclose(instrumentsFile);
+    fclose(musiciansFile);
 }

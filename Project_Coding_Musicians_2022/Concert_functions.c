@@ -1,44 +1,55 @@
 #include "Concert_header.h"
 
-// This function receives concerts' details, and for each concert the function will try to organize the concert based on given requriments.
-// If a concert's execution was successful the function will print the concert's details, including the chosen musicians, the instrument they will be using and the price they ask.
-// Otherwise if a concert's execution wasn't succssesful the function will printf: "Could not find musicians for the concert" and the concert's name.
-void manageConcert(Musician*** players, InstrumentTree inst, int* sizes, TreeNode* root)
+// This function receives concerts' details, and for each concert the function will try to organize the 
+// concert based on given requriments. If a concert's execution was successful the function will print the 
+// concert's details, including the chosen musicians, the instruments they will be using and the price they ask.
+// Otherwise, if a concert's execution wasn't succssesful the function will printf: "Could not find musicians for 
+// the concert" and the concert's name.
+void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 {
-	int counter, i;
-
-	printf("Please enter number of concerts: ");
-	scanf("%d", &counter);
-	Concert* allConcerts = (Concert*)malloc(sizeof(Concert) * counter);
+	char line[MAX_LINE];
+	int logSize = ZERO, phySize = INITIAL;
+	Concert* allConcerts = (Concert*)malloc(sizeof(Concert));
 	checkAllocation(allConcerts);
 
-	for (i = 0; i < counter; i++) 
-	{
-		newConcert(allConcerts[i], inst);
-		reorderCollection(allConcerts[i], players, sizes);
-		setUpConcert(allConcerts[i], players, sizes, root);
+	gets(line);
+
+	while (line[ZERO] != '\n') {
+		newConcert(allConcerts[logSize], inst, line);
+		reorderCollection(allConcerts[logSize], players, sizes);
+		setUpConcert(allConcerts[logSize], players, sizes, inst.root);
+		logSize++;
+
+		if (logSize == phySize) {
+			phySize *= 2;
+			allConcerts = (Concert*)realloc(allConcerts, sizeof(Concert) * phySize);
+			checkAllocation(allConcerts);
+		}
+
+		gets(line);
 	}
+
+	free(allConcerts);
 }
 
-// This function receives a concert's details into 'event'.
-void newConcert(Concert event, InstrumentTree tools) 
+// This function receives a concert's details into 'theEvent'.
+void newConcert(Concert theEvent, InstrumentTree tools, char* description)
 {
-	char seps[] = " :", description[MAX_LINE], *token;
+	char seps[] = " :", *token;
 	bool end = false;
 
-	makeEmptyList(&(event.instrument));
-	CIListNode* curr = event.instrument.head;
+	makeEmptyList(&(theEvent.instrument));
+	CIListNode* curr = theEvent.instrument.head;
 
-	gets(description);
 	token = strtok(description, seps);
-	strcpy(event.name, token);
+	strcpy(theEvent.name, token);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &event.date_of_concert.day);
+	sscanf(token, "%d", &theEvent.date_of_concert.day);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &event.date_of_concert.month);
+	sscanf(token, "%d", &theEvent.date_of_concert.month);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &event.date_of_concert.year);
-	event.date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
+	sscanf(token, "%d", &theEvent.date_of_concert.year);
+	theEvent.date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
 
 	while (end == false) 
 	{
@@ -48,7 +59,7 @@ void newConcert(Concert event, InstrumentTree tools)
 			end = true;
 		else 
 		{
-			curr = insertDataToEndList(&event.instrument, findId(token, tools), strtok(NULL, seps), strtok(NULL, seps));
+			curr = insertDataToEndList(&theEvent.instrument, findId(token, tools), strtok(NULL, seps), strtok(NULL, seps));
 			curr = curr->next;
 		}
 	}
@@ -433,4 +444,8 @@ int findAskedPrice(Musician artist, int id) {
 			return curr->data.price;
 		
 	}
+}
+
+void freeAll() {
+
 }

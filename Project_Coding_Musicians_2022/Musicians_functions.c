@@ -1,9 +1,10 @@
 #include "Concert_header.h"
 
 
-// The function get a text file of musicians information, the instrument tree, and a output parameter logicSize.
-// It's create and set the array of pointers to musicians from the information in the file, return that array and return as output parameter the number of musicians. (logicSize)
-Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree,int* logicSize)
+// The function gets a text file of musicians information, the instrument tree, and a output parameter logicSize.
+// It creates and sets the array of pointers to musicians from the information in the file, return that array and 
+// returns as a output parameter the number of musicians. (logicSize)
+Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree, int* logicSize)
 {
 	int PhysicSize = INITIAL;
     Musician** MusicianGroup = (Musician**)malloc(sizeof(Musician*) * PhysicSize);
@@ -14,8 +15,8 @@ Musician** createMusicianArr(FILE* musiciansFile, InstrumentTree instTree,int* l
 	return MusicianGroup;
 }
 
-// The function get a pointer to array of pointers to musicians, a int physicSize, a file of musicians information and the instrument tree.
-// It's update the pointer to array of pointers to musicians from the information in the file and return the number of musicians.
+// The function gets a pointer to array of pointers to musicians, a int physicSize, a file of musicians information and the instrument tree.
+// It updates the pointer to array of pointers to musicians from the information in the file, and returns the number of musicians.
 int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* musiciansFile, InstrumentTree instTree)
 {
 	int MusiciansLogicSize = ZERO, namePhysicSize, nameLogicSize;
@@ -63,8 +64,9 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	return MusiciansLogicSize;            // logic size;
 }
 
-// The function get a pointer to array of pointers to musicians, the array logical size and a pointer to it's phisical size.
-// If the logical size equal to the phisical size it's update the array to be doubled at his physical size and update the variable physicSize also to be doubled.
+// The function gets a pointer to array of pointers to musicians, the array logical size and a pointer to it's phisical size.
+// If the logical size equals to the phisical size, it updates the array to be doubled at its physical size and updates the variable
+//physicSize also to be doubled.
 void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSize, int* physicSize)
 {
 	if (logSize == (*physicSize))
@@ -75,8 +77,8 @@ void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSi
 	}
 }
 
-// The function get a pointer to the name phisical size and a pointer to the name logic size.
-// It's create new pointer to musician, initialize the musician and return him.
+// The function gets a pointer to the name phisical size, and a pointer to the name logic size.
+// It creates new pointer to musician, initializes the musician and returns him.
 Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 {
 	Musician* musician = (Musician*)malloc(sizeof(Musician));
@@ -94,8 +96,9 @@ Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 }
 
 
-// The function get a pointer musician, the name array log size and a pointer to name phisic size.
-// If the logical size equal to the physical size it's update the array to be doubled at his py\hysical size and update the variable namePhysicSize also to be doubled.
+// The function gets a pointer musician, the name array log size and a pointer to name phisical size.
+// If the logical size equals to the physical size it updates the array to be doubled at his physical size and
+// updates the variable namePhysicSize also to be doubled.
 void updateNamePhysicSizeArray(Musician* musician, int nameLogicSize, int* namePhysicSize)
 {
 	if (nameLogicSize == (*namePhysicSize))
@@ -106,8 +109,8 @@ void updateNamePhysicSizeArray(Musician* musician, int nameLogicSize, int* nameP
 	}
 }
 
-// The function get a pointer musician, a string name and a pointer to name logic size.
-// It's add a name to the name array and update the variable nameLogicSize.
+// The function gets a pointer musician, a string name and a pointer to name logic size.
+// It adds a name to the name array and updates the variable nameLogicSize.
 void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize)
 {
 	strcpy(musician->name[(*nameLogicSize)], name);
@@ -115,8 +118,8 @@ void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize)
 	(*nameLogicSize)++;
 }
 
-//The function get a instrument tree and a string (named "string").
-// If the string is not a name of a instrument the function return false, else it's return true.
+//The function gets a instrument tree and a string (named "string").
+// If the string is not a name of a instrument the function returns false, else it returns true.
 bool isInstrument(InstrumentTree instTree, char* string)
 {
 	if (findInsIdRec(instTree.root, string) == EROR)
@@ -125,8 +128,8 @@ bool isInstrument(InstrumentTree instTree, char* string)
 		return true;
 }
 
-// The function get a pointer to the root of the instrument tree, a string token and a string seps. 
-// It's create new pointer to mpiNode, set the mpiNode and return him.
+// The function gets a pointer to the root of the instruments tree, a string token and a string seps. 
+// It creates new pointer to mpiNode, sets the mpiNode and returns him.
 MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps)
 {
 	MPIListNode* mpiNode = (MPIListNode*)malloc(sizeof(MPIListNode));
@@ -142,8 +145,8 @@ MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps)
 	return mpiNode;
 }
 
-// The function get a char* (string).
-// It's empty every char at the string (switch the char with a space).
+// The function gets a char* (string).
+// It emptys every char at the string (switch the char with a space).
 clearString(char* string)
 {
 	int i = 0;
@@ -154,17 +157,16 @@ clearString(char* string)
 	}
 }
 
-// This function create an array of arrays, each of them contain a pointer to a musician,
+// This function creates an array of arrays, each of them contain a pointer to a musician,
 // while the number of arrays equals the number of available instruments (from the instrumenTree).
 // Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
-// To all the musicians which can play that instrument.
-Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int** sizes)
+// to all the musicians which can play that instrument.
+//('iSize' - the amount of given instruments, 'mSize' - the amount of given musicians).
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes)
 {
 	int logSize, phySize, i, j;
 	Musician*** MusicianCollection = (Musician***)malloc(sizeof(Musician**) * iSize);
 	checkAllocation(MusicianCollection);
-	int* countSizes = (int*)malloc(sizeof(int) * iSize);
-	checkAllocation(countSizes);
 
 	for (i = 0; i < iSize; i++) 
 	{
@@ -181,10 +183,9 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 			MusicianCollection[i] = (Musician**)realloc(MusicianCollection[i], sizeof(Musician*) * logSize);
 			checkAllocation(MusicianCollection[i]);
 		}
-		countSizes[i] = logSize;
+		sizes[i] = logSize;
 	}
 
-	*sizes = countSizes;
 	return MusicianCollection;
 }
 

@@ -112,15 +112,15 @@ TreeNode* newTreeNode(char* data, int Id)
 	return res;
 }
 
-// The function get a tree of instruments and a string (instrument name).
-// It's return the insid of the instrument or EROR(-1) if not found.
+// The function gets a tree of instruments and a string (instrument name).
+// It returns the insid of the instrument or EROR(-1) if not found.
 int findInsId(InstrumentTree tree, char* instrument)
 {
 	findInsIdRec(tree.root, instrument);
 }
 
-// The function get a treeNode of instrument (the root at the start) and a string (instrument name).
-// It's a recursive function that find the instrument insid and return it.
+// The function gets a treeNode of instrument (the root at the start) and a string (instrument name).
+// It's a recursive function that finds the instrument insid and returns it.
 int findInsIdRec(TreeNode* trNode, char* instrument)
 {
 	if (trNode == NULL)

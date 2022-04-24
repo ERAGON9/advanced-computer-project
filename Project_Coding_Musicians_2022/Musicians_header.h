@@ -58,7 +58,7 @@ MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
 
 clearString(char* string);
 
-Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int** sizes);
+Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes);
 
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
 
