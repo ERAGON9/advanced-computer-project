@@ -7,29 +7,58 @@
 // the concert" and the concert's name.
 void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 {
-	char line[MAX_LINE];
+	char* line;
 	int logSize = ZERO, phySize = INITIAL;
-	Concert* allConcerts = (Concert*)malloc(sizeof(Concert));
+	Concert* allConcerts = (Concert*)malloc(sizeof(Concert) * phySize);
 	checkAllocation(allConcerts);
 
-	gets(line);
+	line = readLineFromTheUser();
 
-	while (line[ZERO] != EMPTY_ROW) {
+	while (line[ZERO] != EMPTY_ROW) 
+	{
 		newConcert(allConcerts[logSize], inst, line);
 		reorderCollection(allConcerts[logSize], players, sizes);
 		setUpConcert(allConcerts[logSize], players, sizes, inst.root);
 		logSize++;
 
-		if (logSize == phySize) {
+		if (logSize == phySize) 
+		{
 			phySize *= 2;
 			allConcerts = (Concert*)realloc(allConcerts, sizeof(Concert) * phySize);
 			checkAllocation(allConcerts);
 		}
-
 		gets(line);
 	}
-
 	//freeConcerts(allConcerts, logSize);
+}
+
+// The function read a line of chars from the user.
+// It return the line of chars as a string.
+char* readLineFromTheUser()
+{
+	int stringLogSize = ZERO, stringPhySize = INITIAL;
+	char ch, * string = (char*)malloc(sizeof(char) * stringPhySize);
+	checkAllocation(string);
+
+	scanf("%c ", &ch);
+
+	while (ch != END_OF_LINE)
+	{
+		if (stringLogSize == stringPhySize)
+		{
+			stringPhySize *= 2;
+			string = (char*)realloc(string, sizeof(char) * stringPhySize);
+			checkAllocation(string);
+		}
+		string[stringLogSize] = ch;
+		stringLogSize++;
+
+		scanf("%c ", &ch);
+	}
+	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
+	string[stringLogSize] = EMPTY_ROW;
+
+	return string;
 }
 
 // This function receives a concert's details into 'theEvent'.
@@ -59,7 +88,7 @@ void newConcert(Concert theEvent, InstrumentTree tools, char* description)
 			end = true;
 		else 
 		{
-			curr = insertDataToEndList(&theEvent.instrument, findId(token, tools), strtok(NULL, seps), strtok(NULL, seps));
+			curr = insertDataToEndList(&theEvent.instrument, findInsId(tools, token), strtok(NULL, seps), strtok(NULL, seps));
 			curr = curr->next;
 		}
 	}
@@ -124,46 +153,12 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 	}
 }
 
-// This function receives a instrumen's name and an InstrumentTree, searches the given tree for the given instrument's id, and returns it.
-int findId(char* name, InstrumentTree devices) 
-{
-	int res = FALSE_ID;
-
-	findIdRec(devices.root, name, &res);
-
-	return res;
-}
-
-// This function runs recursively over a given tree, searching for a instrument with the given name
-// ('type'), and insert the instrument's id into the given pointer to integer 'ID'.
-void findIdRec(TreeNode* root, char* type, int* ID) 
-{
-	int direction;
-
-	if (root == NULL || (*ID) != FALSE_ID) 
-		return;
-
-	else 
-	{
-		direction = strcmp(root->instrument, type);
-
-		if (direction == 0) 
-			*ID = root->insId;
-
-		else if (direction > 0)
-			findIdRec(root->left, type, ID);
-
-		else if (direction < 0) 
-			findIdRec(root->right, type, ID);
-	}
-}
-
 // This function receives a Concert ('aEvent'), an array of arrays of pointers to Musicians ('artists'), and an array of integers ('sizes').
 // For each of the instruments in a given concert, the function will order the array of pointers to musicians who can play the instrument,
 //  according to the price the musician ask and the importance of the instroment at that concert.
 void reorderCollection(Concert aEvent, Musician*** artists, int* sizes) 
 {
-	int logSize = ZERO, phySize = 1;
+	//int logSize = ZERO, phySize = 1; ???
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
@@ -309,10 +304,10 @@ void insertMusicians(Musician** performers, MusiciansDetails* aidArr, int size)
 // players including the instrument they will be using and the price they ask for.
 void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root)
 {
-	int logSize = ZERO, phySize = 1, i;
+	int logSize = ZERO, phySize = INITIAL, i;
 	bool proceed = true;
 	CIListNode* curr = show.instrument.head;
-	Musician* taken = (Musician*)malloc(sizeof(Musician));
+	Musician* taken = (Musician*)malloc(sizeof(Musician) * phySize);
 	checkAllocation(taken);
 
 	while (curr != NULL && proceed == true)
@@ -339,14 +334,13 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 	bool res = true, found = false;
 	int inx = NOT_DEFINED, i, j;
 
-	for (i = 0; i < size; i++)
+	for (i = ZERO; i < size; i++)
 	{
-		for (j = 0; (j < lSize) && (found == true); j++) 
+		for (j = ZERO; (j < lSize) && (found == true); j++) 
 		{
 			if (options[i]->name == busy[j].name) 
 				found = true;
 		}
-
 		if (found == false)
 		{
 			inx = i;
@@ -360,7 +354,6 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 	{
 		busy[*lSize] = *options[inx];
 		lSize++;
-
 		if (*lSize == *pSize)
 		{
 			(*pSize) *= 2;
@@ -369,7 +362,6 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 	}
 	else
 		res = false;
-
 
 	return res;
 }
@@ -394,41 +386,39 @@ void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* ro
 	{
 		instName = findInstrumentName(root, curr->data.inst);
 
-		for (int i = inx; i < curr->data.num; inx++, i++) {
+		for (int i = inx; i < curr->data.num; inx++, i++) 
+		{
 			tmpPrice = findAskedPrice(performers[i], curr->data.inst);
 			printf("%s ", performers[i].name);
 			printf("%s ", instName);
 			printf("%d\n", tmpPrice);
 		}
-
 		curr = curr->next;
 	}
 }
 
 //This function runs recursively on a given tree and searches for a node which it's 'insId'
 //equals to id, and returns the node's 'instrument' (the instrument' name).
-char* findInstrumentName(TreeNode* trNode, int id) {
+char* findInstrumentName(TreeNode* trNode, int id) 
+{
 	char *left, *right;
-	if (trNode == NULL) {
+	if (trNode == NULL) 
 		return NULL;
-	}
-	else {
-		if (trNode->insId == id) {
+	else 
+	{
+		if (trNode->insId == id) 
 			return trNode->instrument;
-		}
-		else {
+		else 
+		{
 			left = findInstrumentName(trNode->left, id);
 			right = findInstrumentName(trNode->right, id);
 
-			if (left != NULL) {
+			if (left != NULL) 
 				return left;
-			}
-			else if (right != NULL) {
+			else if (right != NULL) 
 				return right;
-			}
-			else {
+			else 
 				return NULL;
-			}
 		}
 	}
 }
@@ -436,10 +426,12 @@ char* findInstrumentName(TreeNode* trNode, int id) {
 //This function searches for a given instrument ('id' is the instrument's id) in
 //a given musician list of instruments, and returns the asked price by the musician 
 //for performing with this instrument.
-int findAskedPrice(Musician artist, int id) {
+int findAskedPrice(Musician artist, int id) 
+{
 	MPIListNode* curr = artist.instruments.head;
 
-	while (curr != NULL) {
+	while (curr != NULL) 
+	{
 		if (curr->data.insId == id) 
 			return curr->data.price;
 		
@@ -447,13 +439,17 @@ int findAskedPrice(Musician artist, int id) {
 }
 
 //This dunction free a given list of concerts, and the concerts' instruments lists.
-void freeConcerts(Concert* allConcerts, int size) {
+void freeConcerts(Concert* allConcerts, int size) 
+{
+	int i;
 	CIListNode *curr, *tmp;
 
-	for (int i = ZERO; i < size; i++) {
+	for (i = ZERO; i < size; i++) 
+	{
 		curr = allConcerts->instrument.head;
 
-		while (curr != NULL) {
+		while (curr != NULL) 
+		{
 			tmp = curr->next;
 			free(curr);
 			curr = tmp;
@@ -464,15 +460,17 @@ void freeConcerts(Concert* allConcerts, int size) {
 }
 
 //This function free all the dynamically allocated memory from the given arrays and tree.
-void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount,
-	Musician*** MusiciansCollection, int instCount)
+void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount, Musician*** MusiciansCollection, int instCount)
 {
+	int i, j;
 	MPIListNode *curr, *tmp;
 
-	for (int i = ZERO; i < musiciansCount; i++) {
+	for (i = ZERO; i < musiciansCount; i++) 
+	{
 		curr = MusiciansGroup[i]->instruments.head;
 
-		while (curr != NULL) {
+		while (curr != NULL) 
+		{
 			tmp = curr->next;
 			free(curr);
 			curr = tmp;
@@ -480,7 +478,8 @@ void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musician
 		free(MusiciansGroup[i]);
 	}
 
-	for (int j = 0; j < instCount; j++) {
+	for (j = 0; j < instCount; j++) 
+	{
 		free(MusiciansCollection[j]);
 	}
 

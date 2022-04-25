@@ -16,14 +16,13 @@ void main()
     Musician*** MusiciansCollection;
 
     instrumentsFile = fopen("TestyMctestface.txt", "r");
-
-    if (instrumentsFile == NULL)          // Checks that the file opening was successful
+    if (instrumentsFile == NULL)                         // Checks that the file opening was successful
         printf("file can't be opened \n");
 
     instruments = buildInstrumentsTree(instrumentsFile, &instCount);
-    musiciansFile = fopen("ListOfMusicians.txt", "r");
 
-    if (musiciansFile == NULL)            // Checks that the file opening was successful
+    musiciansFile = fopen("ListOfMusicians.txt", "r");
+    if (musiciansFile == NULL)                           // Checks that the file opening was successful
         printf("file can't be opened \n");
 
     int* countSizes = (int*)malloc(sizeof(int) * instCount);
