@@ -11,30 +11,32 @@ void checkAllocation(void* ptr)
 }
 
 // This function creates and returns a binary search tree (while each of its nodes data is a line from the given text file).
+// Also the function return as output value the amount of nodes at the tree (the amount of different instruments).
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
 {
 	int size, counter = ZERO, i;
 	InstrumentTree res;
 
-	char** arr = sortedInstrumentsArr(text, &size);
+	char** arr = InstrumentsArr(text, &size);
 
 	TreeNode* trNode = newTreeNode(arr[ZERO], ZERO);
 	res.root = trNode;
 
-	for (i = 1; i < size; i++)
+	for (i = ONE; i < size; i++)
 	{
 		addNodeToBinaryTree(res, arr[i], i);
 	}
 
 	*count = (i - 1);
-	free(arr);
+	freeInstrumentsArr(arr, *count);
 
 	return res;
 }
 
-// This functions creates a lexicographically sorted array of strings of a given text file lines
+// This functions create an array of strings of the given text file lines
 // (each line in the given text file is a string in the returned array).
-char** sortedInstrumentsArr(FILE* txt, int* counter) {
+char** InstrumentsArr(FILE* txt, int* counter) 
+{
 	char** instList = (char**)malloc(sizeof(char*) * INITIAL);
 	checkAllocation(instList);
 	int lSize = ZERO, pSize = INITIAL;
@@ -67,9 +69,7 @@ char** sortedInstrumentsArr(FILE* txt, int* counter) {
 // It's add to the binary tree new node in the correct place with the data (string) and the instrument id (id).
 void addNodeToBinaryTree(InstrumentTree res, char* string, int id)
 {
-
 	addNodeToBinaryTreeRec(res.root, string, id);
-
 }
 
 // The function get tree node (at the first call it's the root of the tree), the string to enter (data) and a integer instrument id (id).
@@ -113,11 +113,25 @@ TreeNode* newTreeNode(char* data, int Id)
 	return res;
 }
 
+// This function get an array of strings and the array size.
+// It's free the memory that allocated.
+void freeInstrumentsArr(char** arr,int count)
+{
+	int i;
+
+	for (i = ZERO; i < count; i++)
+	{
+		free(arr[i]);
+	}
+
+	free(arr);
+}
+
 // The function gets a tree of instruments and a string (instrument name).
 // It returns the insid of the instrument or EROR(-1) if not found.
 int findInsId(InstrumentTree tree, char* instrument)
 {
-	findInsIdRec(tree.root, instrument);
+	return findInsIdRec(tree.root, instrument);
 }
 
 // The function gets a treeNode of instrument (the root at the start) and a string (instrument name).

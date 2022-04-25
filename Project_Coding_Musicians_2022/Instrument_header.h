@@ -13,6 +13,7 @@
 #define EROR -1
 #define INITIAL 2
 #define ZERO 0
+#define ONE 1
 
 
 typedef struct treeNode
@@ -35,13 +36,15 @@ void checkAllocation(void* ptr);
 
 InstrumentTree buildInstrumentsTree(FILE* text, int* count);
 
-char** sortedInstrumentsArr(FILE* txt, int* counter);
+char** InstrumentsArr(FILE* txt, int* counter);
 
 void addNodeToBinaryTree(InstrumentTree res, char* string, int id);
 
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);
 
 TreeNode* newTreeNode(char* data, int Id);
+
+void freeInstrumentsArr(char** arr, int count);
 
 int findInsId(InstrumentTree tree, char* instrument);
 
