@@ -44,8 +44,6 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);
 
 TreeNode* newTreeNode(char* data, int Id);
 
-void freeInstrumentsArr(char** arr, int count);
-
 int findInsId(InstrumentTree tree, char* instrument);
 
 int findInsIdRec(TreeNode* trNode, char* instrument);

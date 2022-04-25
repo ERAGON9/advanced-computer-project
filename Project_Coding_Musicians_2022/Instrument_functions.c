@@ -28,7 +28,7 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 	}
 
 	*count = (i - 1);
-	freeInstrumentsArr(arr, *count);
+	free(arr); // just release the memory of the arr. (the memory of every string(instrument) is pointed by the binary tree)
 
 	return res;
 }
@@ -111,20 +111,6 @@ TreeNode* newTreeNode(char* data, int Id)
 	res->left = res->right = NULL;
 
 	return res;
-}
-
-// This function get an array of strings and the array size.
-// It's free the memory that allocated.
-void freeInstrumentsArr(char** arr,int count)
-{
-	int i;
-
-	for (i = ZERO; i < count; i++)
-	{
-		free(arr[i]);
-	}
-
-	free(arr);
 }
 
 // The function gets a tree of instruments and a string (instrument name).
