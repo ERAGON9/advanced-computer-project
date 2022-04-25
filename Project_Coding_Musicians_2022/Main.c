@@ -33,7 +33,7 @@ void main()
     MusiciansCollection = constructMCollection(instCount, MusiciansGroup, musiciansCount, countSizes);
     manageConcert(MusiciansCollection, instruments, countSizes);
 
-    freeAll(instruments, MusiciansGroup, MusiciansCollection);
+    freeAll(instruments, MusiciansGroup, musiciansCount, MusiciansCollection, instCount);
     free(countSizes);
 	fclose(instrumentsFile);
     fclose(musiciansFile);

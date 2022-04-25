@@ -4,6 +4,7 @@
 #define FALSE_ID -1
 #define NOT_DEFINED -1
 #define HOUR 60
+#define EMPTY_ROW '\0' 
 
 typedef struct
 {
