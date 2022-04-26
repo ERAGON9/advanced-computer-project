@@ -142,3 +142,8 @@ int findInsIdRec(TreeNode* trNode, char* instrument)
 	}
 }
 
+// Checks that the file opening was successful
+void checkFile(FILE* pointer) {
+	if (pointer == NULL)                         
+		printf("file can't be opened \n");
+}
