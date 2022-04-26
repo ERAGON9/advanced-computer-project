@@ -30,7 +30,8 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 
 		line = readLineFromTheUser();
 	}
-	//freeConcerts(allConcerts, logSize);
+
+	freeConcerts(allConcerts, logSize);
 }
 
 // The function read a line of chars from the user.

@@ -238,3 +238,4 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 		arr[(*lSize)] = player;
 		(*lSize)++;
 	}
+}
