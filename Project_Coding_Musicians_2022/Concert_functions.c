@@ -27,7 +27,8 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 			allConcerts = (Concert*)realloc(allConcerts, sizeof(Concert) * phySize);
 			checkAllocation(allConcerts);
 		}
-		gets(line);
+
+		line = readLineFromTheUser();
 	}
 	//freeConcerts(allConcerts, logSize);
 }
@@ -62,13 +63,11 @@ char* readLineFromTheUser()
 }
 
 // This function receives a concert's details into 'theEvent'.
-void newConcert(Concert theEvent, InstrumentTree tools, char* description)
+void newConcert(Concert theEvent, InstrumentTree instrumentsTr, char* description)
 {
 	char seps[] = " :", *token;
-	bool end = false;
 
 	makeEmptyList(&(theEvent.instrument));
-	CIListNode* curr = theEvent.instrument.head;
 
 	token = strtok(description, seps);
 	strcpy(theEvent.name, token);
@@ -80,17 +79,12 @@ void newConcert(Concert theEvent, InstrumentTree tools, char* description)
 	sscanf(token, "%d", &theEvent.date_of_concert.year);
 	theEvent.date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
 
-	while (end == false) 
-	{
-		token = strtok(NULL, seps);
+	token = strtok(NULL, seps);
 
-		if (token == NULL) 
-			end = true;
-		else 
-		{
-			curr = insertDataToEndList(&theEvent.instrument, findInsId(tools, token), strtok(NULL, seps), strtok(NULL, seps));
-			curr = curr->next;
-		}
+	while (token != NULL)
+	{
+		insertDataToEndList(&(theEvent.instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps));
+		token = strtok(NULL, seps);
 	}
 }
 
@@ -115,12 +109,12 @@ void makeEmptyList(CIList* new)
 
 // This function creates a new CIListNode and insert it with the given details.
 // The function will insert the newly created node to the end of the given list.
-CIListNode* insertDataToEndList(CIList* lst, int id, char* sum, char importance) 
+void insertDataToEndList(CIList* lst, int id, char sum, char importance)
 {
 	int theSum;
 
 	sscanf(sum, "%d", &theSum);
-	CIListNode* newTail = createNewListNode(id, sum, importance, NULL);
+	CIListNode* newTail = createNewListNode(id, theSum, importance, NULL);
 	insertNodeToEndList(lst, newTail);
 
 	return newTail;
@@ -133,8 +127,8 @@ CIListNode* createNewListNode(int type, int count, char significance, CIListNode
 	checkAllocation(res);
 
 	res->data.num = count;
-	res->data.importance = significance;
 	res->data.inst = type;
+	res->data.importance = significance;
 	res->next = next;
 
 	return res;
@@ -158,7 +152,6 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 //  according to the price the musician ask and the importance of the instroment at that concert.
 void reorderCollection(Concert aEvent, Musician*** artists, int* sizes) 
 {
-	//int logSize = ZERO, phySize = 1; ???
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
@@ -397,8 +390,8 @@ void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* ro
 	}
 }
 
-//This function runs recursively on a given tree and searches for a node which it's 'insId'
-//equals to id, and returns the node's 'instrument' (the instrument' name).
+// This function runs recursively on a given tree and searches for a node which it's 'insId'
+// equals to id, and returns the node's 'instrument' (the instrument' name).
 char* findInstrumentName(TreeNode* trNode, int id) 
 {
 	char *left, *right;
@@ -415,17 +408,14 @@ char* findInstrumentName(TreeNode* trNode, int id)
 
 			if (left != NULL) 
 				return left;
-			else if (right != NULL) 
-				return right;
-			else 
-				return NULL;
+
+			return right; // can be the instrument name or NULL
 		}
 	}
 }
 
-//This function searches for a given instrument ('id' is the instrument's id) in
-//a given musician list of instruments, and returns the asked price by the musician 
-//for performing with this instrument.
+// This function searches for a given instrument ('id' is the instrument's id) in a given musician list of instruments.
+// It return the asked price by the musician for performing with this instrument.
 int findAskedPrice(Musician artist, int id) 
 {
 	MPIListNode* curr = artist.instruments.head;
@@ -434,11 +424,10 @@ int findAskedPrice(Musician artist, int id)
 	{
 		if (curr->data.insId == id) 
 			return curr->data.price;
-		
 	}
 }
 
-//This dunction free a given list of concerts, and the concerts' instruments lists.
+// This function free a given list of concerts, and the concerts' instruments lists.
 void freeConcerts(Concert* allConcerts, int size) 
 {
 	int i;
@@ -459,17 +448,20 @@ void freeConcerts(Concert* allConcerts, int size)
 	free(allConcerts);
 }
 
-//This function free all the dynamically allocated memory from the given arrays and tree.
+// This function free all the dynamically allocated memory from the given arrays and tree.
 void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount, Musician*** MusiciansCollection, int instCount)
 {
 	int i, j;
 	MPIListNode *curr, *tmp;
 
-	for (i = ZERO; i < musiciansCount; i++) 
+	for (i = ZERO; i < musiciansCount; i++) // free MusiciansGroup
 	{
-		curr = MusiciansGroup[i]->instruments.head;
+		for (j = ZERO; j < MusiciansGroup[i]->nameSize; j++) // free the name
+			free(MusiciansGroup[i]->name[j]);
+		free(MusiciansGroup[i]->name);
 
-		while (curr != NULL) 
+		curr = MusiciansGroup[i]->instruments.head;
+		while (curr != NULL)  // free the instruments list
 		{
 			tmp = curr->next;
 			free(curr);
@@ -477,17 +469,16 @@ void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musician
 		}
 		free(MusiciansGroup[i]);
 	}
+	free(MusiciansGroup);
 
-	for (j = 0; j < instCount; j++) 
-	{
-		free(MusiciansCollection[j]);
-	}
-
+	for (i = ZERO; i < instCount; i++) // free the MusiciansCollection
+		free(MusiciansCollection[i]);
 	free(MusiciansCollection);
-	freeTreeRec(instruments.root);
+
+	freeTreeRec(instruments.root); // free the instruments tree
 }
 
-//This function free a given tree and its nodes recursively.
+// This function free a given tree and its nodes recursively.
 void freeTreeRec(TreeNode* root)
 {
 	if (root == NULL)

@@ -35,15 +35,15 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 		{
 			updateNamePhysicSizeArray(musician, nameLogicSize, &namePhysicSize);
 
-			if (nameLogicSize <= 1)                                        // the first two words must be the musician name.
+			if (nameLogicSize <= 1)                                    // the first two words must be the musician name.
 				addMusicianNameToArray(musician, token, &nameLogicSize);
 
             else
 			{
-				if (isInstrument(instTree, token) == false)                  // not a instrument, so must be a part from the musician name.
+				if (isInstrument(instTree, token) == false)           // not a instrument, so must be a part from the musician name.
 					addMusicianNameToArray(musician, token, &nameLogicSize);
 				else 
-				{                                                       // isInstrument(instTree, token) == true
+				{                                                    // isInstrument(instTree, token) == true
 					MPIListNode* mpiNode = initializeMPINode(instTree, token, seps);
 					addNodeToMusicianInstrumentsList(musician, mpiNode);
 				}
@@ -52,6 +52,7 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
         }
 		musician->name = (char**)realloc(musician->name, sizeof(char*) * nameLogicSize);
 		checkAllocation(musician->name);
+		musician->nameSize = nameLogicSize;
 		tempMusicianGroup[MusiciansLogicSize] = musician;
 		MusiciansLogicSize++;
 		clearString(tempString);
@@ -238,18 +239,3 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 		(*lSize)++;
 	}
 }
-
-//void printMusiciansCollection(Musician*** coll, int size)
-//{
-//	for (int i = ZERO; i < size; i++)
-//	{
-//		printf("%d", i);
-//
-//		for (int j = ZERO; j < size; j++)
-//		{
-//			printf("%s ", coll[i][j]->name);
-//		}
-//
-//		printf("/n");
-//	}
-//}

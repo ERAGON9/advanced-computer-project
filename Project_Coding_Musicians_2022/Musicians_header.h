@@ -5,8 +5,8 @@
 
 typedef struct
 {
-	unsigned short insId; // The instrument id
-	float price;          // The price for play this instrument
+	unsigned short insId; // The instrument id.
+	float price;          // The price for play this instrument.
 
 } MusicianPriceInstrument;
 
@@ -27,6 +27,7 @@ typedef struct mpilist
 typedef struct
 {
 	char** name;         // Array of names (array of strings)
+	int nameSize;        // The name array size.
 	MPIList instruments; // List of instruments (List of MusicianPriceInstrument)
 
 } Musician;

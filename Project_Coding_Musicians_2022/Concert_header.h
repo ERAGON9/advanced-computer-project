@@ -54,7 +54,7 @@ float convertHour(char* hours, char* minutes);
 
 void makeEmptyList(CIList* new);
 
-CIListNode* insertDataToEndList(CIList* lst, int id, char* sum, char importance);
+void insertDataToEndList(CIList* lst, int id, char sum, char importance);
 
 CIListNode* createNewListNode(int type, int count, char significance, CIListNode* next);
 
