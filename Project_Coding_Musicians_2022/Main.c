@@ -7,7 +7,7 @@ Project Coding Musicians
 
 #include "Concert_header.h"
 
-void main()
+void main(int argc, char* argv[])
 {
     FILE *instrumentsFile, *musiciansFile;
     InstrumentTree instruments;
@@ -16,14 +16,14 @@ void main()
     Musician*** MusiciansCollection;
 
     instrumentsFile = fopen("TestyMctestface.txt", "r");
-    if (instrumentsFile == NULL)                         // Checks that the file opening was successful
-        printf("file can't be opened \n");
+    //instrumentsFile = fopen(argv[1], "r");
+    checkFile(instrumentsFile);
 
     instruments = buildInstrumentsTree(instrumentsFile, &instCount);
 
     musiciansFile = fopen("ListOfMusicians.txt", "r");
-    if (musiciansFile == NULL)                           // Checks that the file opening was successful
-        printf("file can't be opened \n");
+    //musiciansFile = fopen(argv[2], "r");
+    checkFile(musiciansFile);
 
     int* countSizes = (int*)malloc(sizeof(int) * instCount);
     checkAllocation(countSizes);

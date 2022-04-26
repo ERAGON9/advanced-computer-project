@@ -47,3 +47,5 @@ TreeNode* newTreeNode(char* data, int Id);
 int findInsId(InstrumentTree tree, char* instrument);
 
 int findInsIdRec(TreeNode* trNode, char* instrument);
+
+void checkFile(FILE* pointer);
