@@ -54,9 +54,11 @@ void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize);
 
 bool isInstrument(InstrumentTree instTree, char* string);
 
-MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps);
+MPIListNode* initializeMPINode(InstrumentTree instTree, char* token, char* seps);
 
-clearString(char* string);
+void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode);
+
+void clearString(char* string);
 
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes);
 

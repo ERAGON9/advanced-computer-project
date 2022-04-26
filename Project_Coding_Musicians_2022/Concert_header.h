@@ -4,7 +4,8 @@
 #define FALSE_ID -1
 #define NOT_DEFINED -1
 #define HOUR 60
-#define EMPTY_ROW '\0' 
+#define EMPTY_ROW '\0'
+#define END_OF_LINE '\n'
 
 typedef struct
 {
@@ -45,6 +46,8 @@ typedef struct
 
 void manageConcert(Musician*** players, InstrumentTree inst, int* sizes);
 
+char* readLineFromTheUser();
+
 void newConcert(Concert theEvent, InstrumentTree tools, char* description);
 
 float convertHour(char* hours, char* minutes);
@@ -56,10 +59,6 @@ CIListNode* insertDataToEndList(CIList* lst, int id, char* sum, char importance)
 CIListNode* createNewListNode(int type, int count, char significance, CIListNode* next);
 
 void insertNodeToEndList(CIList* lst, CIListNode* new);
-
-int findId(char* name, InstrumentTree devices);
-
-void findIdRec(TreeNode* root, char* type, int* ID);
 
 void reorderCollection(Concert aEvent, Musician*** artists, int* sizes);
 
@@ -89,4 +88,6 @@ int findAskedPrice(Musician artist, int id);
 
 void freeConcerts(Concert* allConcerts, int size);
 
-void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, Musician*** MusiciansCollection);
+void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount, Musician*** MusiciansCollection, int instCount);
+
+void freeTreeRec(TreeNode* root);

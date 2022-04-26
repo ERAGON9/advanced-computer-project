@@ -25,29 +25,27 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	char* tempString = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(tempString);
 
-	while (fgets(tempString, MAX_LINE, musiciansFile) != NULL) {
+	while (fgets(tempString, MAX_LINE, musiciansFile) != NULL) 
+	{
 		updateMusicianGroupPhysicSizeArray(&tempMusicianGroup, MusiciansLogicSize, &MusiciansPhysicSize);
 		Musician* musician = initializeMusician(&namePhysicSize, &nameLogicSize);
         token = strtok(tempString, seps);
 
-        while (token != NULL) {                                            // run on one line (one string)
+        while (token != NULL)                         // run on one line (one string)
+		{
 			updateNamePhysicSizeArray(musician, nameLogicSize, &namePhysicSize);
 
 			if (nameLogicSize <= 1)                                        // the first two words must be the musician name.
 				addMusicianNameToArray(musician, token, &nameLogicSize);
 
-            else{
+            else
+			{
 				if (isInstrument(instTree, token) == false)                  // not a instrument, so must be a part from the musician name.
 					addMusicianNameToArray(musician, token, &nameLogicSize);
-				else {                                                       // isInstrument(instTree, token) == true
-					MPIListNode* mpiNode = initializeMPINode(instTree.root, token, seps);
-
-					if (musician->instruments.head == NULL)
-						musician->instruments.head = musician->instruments.tail = mpiNode;
-					else{
-						musician->instruments.tail->next = mpiNode;
-						musician->instruments.tail = mpiNode;
-					}
+				else 
+				{                                                       // isInstrument(instTree, token) == true
+					MPIListNode* mpiNode = initializeMPINode(instTree, token, seps);
+					addNodeToMusicianInstrumentsList(musician, mpiNode);
 				}
             }
 			token = strtok(NULL, seps);
@@ -66,8 +64,8 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 }
 
 // The function gets a pointer to array of pointers to musicians, the array logical size and a pointer to it's phisical size.
-// If the logical size equals to the phisical size, it updates the array to be doubled at its physical size and updates the variable
-//physicSize also to be doubled.
+// If the logical size equals to the phisical size, it updates the array to be doubled at it's physical size and the output variable
+// physicSize also to be doubled.
 void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSize, int* physicSize)
 {
 	if (logSize == (*physicSize))
@@ -79,7 +77,8 @@ void updateMusicianGroupPhysicSizeArray(Musician*** tempMusicianGroup, int logSi
 }
 
 // The function gets a pointer to the name phisical size, and a pointer to the name logic size.
-// It creates new pointer to musician, initializes the musician and returns him.
+// It creates new pointer to musician, initializes the musician and returns him,
+// also it update and return as output variables namePhysicSize, nameLogicSize.
 Musician* initializeMusician(int* namePhysicSize, int* nameLogicSize)
 {
 	Musician* musician = (Musician*)malloc(sizeof(Musician));
@@ -111,11 +110,13 @@ void updateNamePhysicSizeArray(Musician* musician, int nameLogicSize, int* nameP
 }
 
 // The function gets a pointer musician, a string name and a pointer to name logic size.
-// It adds a name to the name array and updates the variable nameLogicSize.
+// It adds a name to the name array and updates the output variable nameLogicSize.
 void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize)
 {
+	musician->name[(*nameLogicSize)] = (char*)malloc(sizeof(char) * (strlen(name) + 1)); // + 1 for the '/0'at the end.
+	checkAllocation(musician->name[(*nameLogicSize)]);
+
 	strcpy(musician->name[(*nameLogicSize)], name);
-	strcat(musician->name[(*nameLogicSize)], "\0");
 	(*nameLogicSize)++;
 }
 
@@ -123,7 +124,7 @@ void addMusicianNameToArray(Musician* musician, char* name, int* nameLogicSize)
 // If the string is not a name of an instrument the function returns false, else it returns true.
 bool isInstrument(InstrumentTree instTree, char* string)
 {
-	if (findInsIdRec(instTree.root, string) == EROR)
+	if (findInsId(instTree, string) == EROR)
 		return false;
 	else
 		return true;
@@ -131,12 +132,12 @@ bool isInstrument(InstrumentTree instTree, char* string)
 
 // The function gets a pointer to the root of the instruments tree, a string token and a string seps. 
 // It creates a new pointer to mpiNode, sets the mpiNode and returns him.
-MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps)
+MPIListNode* initializeMPINode(InstrumentTree instTree, char* token, char* seps)
 {
 	MPIListNode* mpiNode = (MPIListNode*)malloc(sizeof(MPIListNode));
 	checkAllocation(mpiNode);
 
-	mpiNode->data.insId = findInsIdRec(instTreeRoot, token);
+	mpiNode->data.insId = findInsId(instTree, token);
 
 	token = strtok(NULL, seps);
 	sscanf(token, "%f", &(mpiNode->data.price));
@@ -146,9 +147,23 @@ MPIListNode* initializeMPINode(TreeNode* instTreeRoot, char* token, char* seps)
 	return mpiNode;
 }
 
+// The function get a pointer to musician (musician) and a pointer to MPIListNode (mpiNode).
+// It add the list node (mpiNode) to the musician instrument list.
+void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode)
+{
+	if (musician->instruments.head == NULL)
+		musician->instruments.head = musician->instruments.tail = mpiNode;
+
+	else
+	{
+		musician->instruments.tail->next = mpiNode;
+		musician->instruments.tail = mpiNode;
+	}
+}
+
 // The function gets a char* (string).
 // It emptys every char at the string (switch the char with a space).
-clearString(char* string)
+void clearString(char* string)
 {
 	int i = 0;
 
@@ -158,11 +173,11 @@ clearString(char* string)
 	}
 }
 
-// This function creates an array of arrays, each of them contain a pointer to a musician,
-// while the number of arrays equals the number of available instruments (from the instrumenTree).
-// Each array's index in the bigger final array equals a instrument's id, and includes the pointers 
+// This function creates an array of arrays, each of them contain a pointer to a musician (MusicianCollection),
+// while the number of cells at the outer array equal to the number of different existing instruments (from the instrumenTree).
+// Each array's index in the outer array equal to an instrument's id, and includes the pointers 
 // to all the musicians which can play that instrument.
-//('iSize' - the amount of given instruments, 'mSize' - the amount of given musicians).
+//('iSize' - The amount of different existing instruments. 'mSize' - The amount of musicians (the amount of all the musician)).
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes)
 {
 	int logSize, phySize, i, j;
@@ -190,8 +205,8 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 	return MusicianCollection;
 }
 
-// This function check if a given instrument's id ('id') matches one of the given musician's 
-// instruments' ids, if it does a pointer to that musician will be added to the given array of pointers to musicians ('arr').
+// This function check if a given instrument's id ('id') matches one of the given musician's instruments' ids,
+// if it does a pointer to that musician will be added to the given array of pointers to musicians ('arr').
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize) 
 {
 	MPIListNode* curr = player->instruments.head;
