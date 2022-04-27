@@ -3,9 +3,9 @@
 // This function receives concerts' details, and for each concert the function will try to organize the 
 // concert based on given requriments. If a concert's execution was successful the function will print the 
 // concert's details, including the chosen musicians, the instruments they will be using and the price they ask.
-// Otherwise, if a concert's execution wasn't succssesful the function will printf: "Could not find musicians for 
+// Otherwise, if a concert's execution wasn't succssesful the function will print: "Could not find musicians for 
 // the concert" and the concert's name.
-void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
+void manageConcert(Musician*** MusicianCollection, InstrumentTree inst, int* sizes)
 {
 	char* line;
 	int logSize = ZERO, phySize = INITIAL;
@@ -17,8 +17,8 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes)
 	while (line[ZERO] != EMPTY_ROW) 
 	{
 		newConcert(allConcerts[logSize], inst, line);
-		reorderCollection(allConcerts[logSize], players, sizes);
-		setUpConcert(allConcerts[logSize], players, sizes, inst.root);
+		reorderCollection(allConcerts[logSize], MusicianCollection, sizes);
+		setUpConcert(allConcerts[logSize], MusicianCollection, sizes, inst.root);
 		logSize++;
 
 		if (logSize == phySize) 
@@ -148,25 +148,26 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 	}
 }
 
-// This function receives a Concert ('aEvent'), an array of arrays of pointers to Musicians ('artists'), and an array of integers ('sizes').
+// This function receives a Concert ('aEvent'), an array of arrays of pointers to Musicians ('MusicianCollection'), and an array of integers ('sizes').
 // For each of the instruments in a given concert, the function will order the array of pointers to musicians who can play the instrument,
-//  according to the price the musician ask and the importance of the instroment at that concert.
-void reorderCollection(Concert aEvent, Musician*** artists, int* sizes) 
+//  according to the price the musician ask and the importance of the instrument at that concert.
+void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
 	{
-		reorderMusicians(artists[curr->data.inst], curr->data.importance, sizes[curr->data.inst], curr->data.inst);
+		reorderMusicians(MusicianCollection[curr->data.inst], curr->data.importance, sizes[curr->data.inst], curr->data.inst);
 		curr = curr->next;
 	}
 }
 
-// This function orders a given list of pointers to musicians ('players'), at an order based on the given 'direction'.
+// This function orders a given array of pointers to musicians ('players'), at an order based on the given 'direction'.
 void reorderMusicians(Musician** players, int direction, int size, int id)
 {
 	MusiciansDetails* tmpArr = (MusiciansDetails*)malloc(sizeof(MusiciansDetails) * size);
 	checkAllocation(tmpArr);
+
 	createAidArray(tmpArr, players, size, id);
 	mergeMusicians(tmpArr, size, direction);
 	insertMusicians(players, tmpArr, size);
@@ -177,7 +178,9 @@ void reorderMusicians(Musician** players, int direction, int size, int id)
 // those musicians ask for performing with a given instrument ('instId').
 void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, int instId)
 {
-	for (int i = 0; i < size; i++) 
+	int i;
+
+	for (i = 0; i < size; i++) 
 	{
 		aidArr[i].pointer = performers[i];
 		aidArr[i].askedPrice = findPrice(instId, performers[i]->instruments.head);
@@ -185,21 +188,19 @@ void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, i
 }
 
 // This function searches for a given instrument (which 'wanted' is its id) in a given MPIList and returns the insturment's price.
+// The musician play this instrument (so the if condition must will happen once every call of this function).
 int findPrice(int wanted, MPIListNode* head)
 {
-	int res = ZERO;
 	MPIListNode* curr = head;
 
-	while (curr != NULL && res == ZERO) 
+	while (curr != NULL) 
 	{
 		if (curr->data.insId == wanted)
-			res = curr->data.price;
+			return curr->data.price;
 
 		else 
 			curr = curr->next;
 	}
-
-	return res;
 }
 
 // This function sorts a given array of MusiciansDetails recursively.
@@ -296,7 +297,7 @@ void insertMusicians(Musician** performers, MusiciansDetails* aidArr, int size)
 // If the function couldn't find a suitable musician, an error message will be printed.
 // Otherwise the function will print the concert details, including its name, date and attending 
 // players including the instrument they will be using and the price they ask for.
-void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root)
+void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, TreeNode* root)
 {
 	int logSize = ZERO, phySize = INITIAL, i;
 	bool proceed = true;
@@ -306,29 +307,32 @@ void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root)
 
 	while (curr != NULL && proceed == true)
 	{
-		for (i = 0; (i < curr->data.num) && (proceed == true); i++)
+		for (i = ZERO; (i < curr->data.num) && (proceed == true); i++)
 		{
-			proceed = addMusician(artists[curr->data.inst], sizes[curr->data.inst], taken, &logSize, &phySize);
+			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], taken, &logSize, &phySize);
 		}
+
+		curr = curr->next;
 	}
 
 	if (proceed == false)
 		printf("Could not find musicians for the concert %s", show.name);
+
 	else // proceed == true
 		printConcert(show, taken, logSize, root);
 
 	free(taken);
 }
 
-// This function runs on a given list of pointers to musicians ('options'), and checks if a musician doesn't
-// exist in the given list of musicians ('busy'). If it doesn't, the musician will be added to 'busy'.
+// This function runs on a given array of pointers to musicians ('options'), and checks if a musician doesn't
+// exist in the given array of musicians ('busy'). If it doesn't, the musician will be added to 'busy'.
 // If the function couldn't find a musician, it will return false, otherwise the function will return true.
-bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* pSize)
+bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSize, int* pSize)
 {
 	bool res = true, found = false;
 	int inx = NOT_DEFINED, i, j;
 
-	for (i = ZERO; i < size; i++)
+	for (i = ZERO; i < optionArrSize; i++)
 	{
 		for (j = ZERO; (j < lSize) && (found == true); j++) 
 		{
@@ -338,15 +342,15 @@ bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* 
 		if (found == false)
 		{
 			inx = i;
-			i = size;
+			i = optionArrSize;
 		}
 		else 
 			found = false;
 	}
 
-	if (inx != -1) 
+	if (inx != -1)
 	{
-		busy[*lSize] = *options[inx];
+		busy[*lSize] = *(options[inx]);
 		lSize++;
 		if (*lSize == *pSize)
 		{

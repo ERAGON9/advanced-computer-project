@@ -6,70 +6,40 @@ void checkAllocation(void* ptr)
 	if (ptr == NULL)
 	{
 		printf("Allocation error\n");
-		exit(-1);
+		exit(1);
 	}
 }
 
-// This function creates and returns a binary search tree (while each of its nodes data is a line from the given text file).
+// This function creates and returns a binary search tree (each of its nodes data is a line from the given text file (instrument name)).
 // Also the function return as output value the amount of nodes at the tree (the amount of different instruments).
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
 {
-	int size, counter = ZERO, i;
-	InstrumentTree res;
+	int id = ZERO;
+	InstrumentTree instrumentTr;
+	char* instrumentName;
 
-	char** arr = InstrumentsArr(text, &size);
+	fgets(instrumentName, MAX_LINE, text); // Creating the root of the tree.
 
-	TreeNode* trNode = newTreeNode(arr[ZERO], ZERO);
-	res.root = trNode;
+	TreeNode* rootNode = newTreeNode(instrumentName, id);
+	instrumentTr.root = rootNode;
+	id++;
 
-	for (i = ONE; i < size; i++)
+	while (fgets(instrumentName, MAX_LINE, text) != NULL) // Creating the binary tree.
 	{
-		addNodeToBinaryTree(res, arr[i], i);
+		addNodeToBinaryTree(instrumentTr, instrumentName, id);
+		id++;
 	}
 
-	*count = (i - 1);
-	free(arr); // just release the memory of the arr. (the memory of every string(instrument) is pointed by the binary tree)
+	*count = id;
 
-	return res;
+	return instrumentTr;
 }
 
-// This functions create an array of strings of the given text file lines
-// (each line in the given text file is a string in the returned array).
-char** InstrumentsArr(FILE* txt, int* counter) 
-{
-	char** instList = (char**)malloc(sizeof(char*) * INITIAL);
-	checkAllocation(instList);
-	int lSize = ZERO, pSize = INITIAL;
-
-	instList[lSize] = (char*)malloc(sizeof(char) * MAX_LINE);
-	checkAllocation(instList[lSize]);
-
-	while (fgets(instList[lSize], MAX_LINE, txt) != NULL) {
-		lSize++;
-
-		if (lSize == pSize) {
-			pSize *= 2;
-			instList = (char**)realloc(instList, sizeof(char*) * pSize);
-			checkAllocation(instList);
-		}
-
-		instList[lSize] = (char*)malloc(sizeof(char) * MAX_LINE);
-		checkAllocation(instList[lSize]);
-	}
-
-	instList = (char**)realloc(instList, sizeof(char*) * lSize);
-	checkAllocation(instList);
-
-	*counter = lSize;
-
-	return instList;
-}
-
-// The function get instrument tree (res), the string to enter and a integer instrument id.
+// The function get instrument tree (instrumentTr), the string to enter and a integer instrument id.
 // It's add to the binary tree new node in the correct place with the data (string) and the instrument id (id).
-void addNodeToBinaryTree(InstrumentTree res, char* string, int id)
+void addNodeToBinaryTree(InstrumentTree instrumentTr, char* string, int id)
 {
-	addNodeToBinaryTreeRec(res.root, string, id);
+	addNodeToBinaryTreeRec(instrumentTr.root, string, id);
 }
 
 // The function get tree node (at the first call it's the root of the tree), the string to enter (data) and a integer instrument id (id).
@@ -142,8 +112,13 @@ int findInsIdRec(TreeNode* trNode, char* instrument)
 	}
 }
 
-// Checks that the file opening was successful
-void checkFile(FILE* pointer) {
-	if (pointer == NULL)                         
+// The function get a pointer to file.
+// It Check that the file opening was successful.
+void checkFile(FILE* pointer) 
+{
+	if (pointer == NULL)
+	{
 		printf("file can't be opened \n");
+		exit(1);
+	}
 }

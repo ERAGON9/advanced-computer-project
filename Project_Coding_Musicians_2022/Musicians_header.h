@@ -35,8 +35,8 @@ typedef struct
 
 typedef struct
 {
-	Musician* pointer;
-	float askedPrice;
+	Musician* pointer; // A pointer to musician
+	float askedPrice;  // The price the musician ask for a specific instrument
 
 } MusiciansDetails;
 
@@ -66,4 +66,3 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
 
 void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
-

@@ -14,7 +14,8 @@
 #define INITIAL 2
 #define ZERO 0
 #define ONE 1
-
+#define FIRST_FILE 1
+#define SECOUND_FILE 2
 
 typedef struct treeNode
 {

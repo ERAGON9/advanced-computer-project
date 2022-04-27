@@ -1,7 +1,13 @@
 /*
 Students:   Lior Barak   206631418
 			Shalev Kedar 314714080
-Project Coding Musicians
+
+Project Coding Musicians:
+
+At this project we gets from the user concerts details, for each concert the program find musicians in accordance
+to the instruments that needed at the concert details.
+If it canot manage a concert show the program will print an appropriate message.
+Else the program can manage the concert show and an apropriate massage with details will be printed.
 
 */
 
@@ -15,14 +21,12 @@ void main(int argc, char* argv[])
     Musician** MusiciansGroup;
     Musician*** MusiciansCollection;
 
-    instrumentsFile = fopen("TestyMctestface.txt", "r");
-    //instrumentsFile = fopen(argv[1], "r");
+    instrumentsFile = fopen(argv[FIRST_FILE], "r");
     checkFile(instrumentsFile);
 
     instruments = buildInstrumentsTree(instrumentsFile, &instCount);
 
-    musiciansFile = fopen("ListOfMusicians.txt", "r");
-    //musiciansFile = fopen(argv[2], "r");
+    musiciansFile = fopen(argv[SECOUND_FILE], "r");
     checkFile(musiciansFile);
 
     int* countSizes = (int*)malloc(sizeof(int) * instCount);
