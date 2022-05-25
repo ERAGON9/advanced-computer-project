@@ -4,7 +4,7 @@ Students:   Lior Barak   206631418
 
 Project Coding Musicians:
 
-At this project we get from the user concerts details, for each concert the program find musicians in accordance
+At this project we gets from the user concerts details, for each concert the program find musicians in accordance
 to the instruments that needed at the concert details.
 If it canot manage a concert show the program will print an appropriate message.
 Else the program can manage the concert show and an apropriate massage with details will be printed.
