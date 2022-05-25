@@ -329,50 +329,42 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 // If the function couldn't find a musician, it will return false, otherwise the function will return true.
 bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSize, int* pSize)
 {
-	bool res = true, found = false;
-	int inx = NOT_DEFINED, i, j;
+	bool found = false;
+	int i, j;
 
 	for (i = ZERO; i < optionArrSize; i++)
 	{
-		for (j = ZERO; (j < lSize) && (found == true); j++) 
+		for (j = ZERO; j < lSize; j++)
 		{
-			if (options[i]->name == busy[j].name) 
+			if (options[i]->name != busy[j].name)
 				found = true;
 		}
-		if (found == false)
-		{
-			inx = i;
-			i = optionArrSize;
-		}
-		else 
-			found = false;
-	}
 
-	if (inx != -1)
-	{
-		busy[*lSize] = *(options[inx]);
-		lSize++;
-		if (*lSize == *pSize)
+		if (found == true)
 		{
-			(*pSize) *= 2;
-			busy = (Musician*)realloc(busy, sizeof(Musician) * (*pSize));
+			busy[*lSize] = *(options[i]);
+			lSize++;
+			if (*lSize == *pSize)
+			{
+				(*pSize) *= 2;
+				busy = (Musician*)realloc(busy, sizeof(Musician) * (*pSize));
+			}
+			return found;
 		}
 	}
-	else
-		res = false;
 
-	return res;
+	return found;
 }
 
 // This function prints a given concert's details, including its name, date and attending 
 // players including the instrument they will be using and the price they ask for.
-void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* root)
+void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 {
 	int hours = (int)theEvent.date_of_concert.hour;
-	int minutes = (int)(theEvent.date_of_concert.hour) % 1 * HOUR;
+	int minutes = ((int)(theEvent.date_of_concert.hour) % 1) * HOUR;
 	CIListNode* curr = theEvent.instrument.head;
 	char* instName;
-	int inx = ZERO, tmpPrice;
+	int inx = ZERO, tmpPrice, i, j, sumPrice = ZERO;
 
 	printf("%s ", theEvent.name);
 	printf("%d ", theEvent.date_of_concert.day);
@@ -384,15 +376,18 @@ void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* ro
 	{
 		instName = findInstrumentName(root, curr->data.inst);
 
-		for (int i = inx; i < curr->data.num; inx++, i++) 
+		for (i = inx; i < (curr->data.num + inx); inx++, i++)
 		{
-			tmpPrice = findAskedPrice(performers[i], curr->data.inst);
-			printf("%s ", performers[i].name);
+			tmpPrice = findAskedPrice(busy[i], curr->data.inst);
+			for(j = ZERO; j< busy[i].nameSize; j++)
+				printf("%s ", busy[i].name[j]);
 			printf("%s ", instName);
 			printf("%d\n", tmpPrice);
+			sumPrice += tmpPrice;
 		}
 		curr = curr->next;
 	}
+	printf("%d\n", sumPrice);
 }
 
 // This function runs recursively on a given tree and searches for a node which it's 'insId'
