@@ -4,6 +4,7 @@
 
 #define FALSE_ID -1
 #define NOT_DEFINED -1
+#define NOT_FOUND -1
 #define HOUR 60
 #define EMPTY_ROW '\0'
 #define END_OF_LINE '\n'
@@ -55,7 +56,7 @@ float convertHour(char* hours, char* minutes);
 
 void makeEmptyList(CIList* new);
 
-void insertDataToEndList(CIList* lst, int id, char sum, char importance);
+void insertDataToEndList(CIList* lst, int id, char* sum, char importance);
 
 CIListNode* createNewListNode(int type, int count, char significance, CIListNode* next);
 
@@ -67,7 +68,7 @@ void reorderMusicians(Musician** players, int direction, int size, int id);
 
 void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, int instId);
 
-int findPrice(int wanted, MPIListNode* head);
+float findPrice(int wanted, MPIListNode* head);
 
 void mergeMusicians(MusiciansDetails* aidArr, int size, int direct);
 
@@ -87,7 +88,7 @@ char* findInstrumentName(TreeNode* trNode, int id);
 
 int findAskedPrice(Musician artist, int id);
 
-void freeConcerts(Concert* allConcerts, int size);
+void freeConcert(Concert* aConcert);
 
 void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musiciansCount, Musician*** MusiciansCollection, int instCount);
 

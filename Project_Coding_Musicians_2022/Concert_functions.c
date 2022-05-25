@@ -8,30 +8,21 @@
 void manageConcert(Musician*** MusicianCollection, InstrumentTree inst, int* sizes)
 {
 	char* line;
-	int logSize = ZERO, phySize = INITIAL;
-	Concert* allConcerts = (Concert*)malloc(sizeof(Concert) * phySize);
-	checkAllocation(allConcerts);
+	Concert* allConcerts;
 
 	line = readLineFromTheUser();
 
 	while (line[ZERO] != EMPTY_ROW) 
 	{
-		newConcert(allConcerts[logSize], inst, line);
-		reorderCollection(allConcerts[logSize], MusicianCollection, sizes);
-		setUpConcert(allConcerts[logSize], MusicianCollection, sizes, inst.root);
-		logSize++;
+		allConcerts = (Concert*)malloc(sizeof(Concert));
+		checkAllocation(allConcerts);
 
-		if (logSize == phySize) 
-		{
-			phySize *= 2;
-			allConcerts = (Concert*)realloc(allConcerts, sizeof(Concert) * phySize);
-			checkAllocation(allConcerts);
-		}
-
+		newConcert(*allConcerts, inst, line);
+		reorderCollection(*allConcerts, MusicianCollection, sizes);
+		setUpConcert(*allConcerts, MusicianCollection, sizes, inst.root);
+		freeConcert(allConcerts);
 		line = readLineFromTheUser();
 	}
-
-	freeConcerts(allConcerts, logSize);
 }
 
 // The function read a line of chars from the user.
@@ -84,7 +75,7 @@ void newConcert(Concert theEvent, InstrumentTree instrumentsTr, char* descriptio
 
 	while (token != NULL)
 	{
-		insertDataToEndList(&(theEvent.instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps));
+		insertDataToEndList(&(theEvent.instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
 		token = strtok(NULL, seps);
 	}
 }
@@ -95,8 +86,8 @@ float convertHour(char* hours, char* minutes)
 {
 	float res, tmp;
 	
-	sscanf(hours, "%d", &res);
-	sscanf(minutes, "%d", &tmp);
+	sscanf(hours, "%f", &res);
+	sscanf(minutes, "%f", &tmp);
 	res += (tmp / 60);
 
 	return res;
@@ -110,15 +101,13 @@ void makeEmptyList(CIList* new)
 
 // This function creates a new CIListNode and insert it with the given details.
 // The function will insert the newly created node to the end of the given list.
-void insertDataToEndList(CIList* lst, int id, char sum, char importance)
+void insertDataToEndList(CIList* lst, int id, char* sum, char importance)
 {
 	int theSum;
 
 	sscanf(sum, "%d", &theSum);
 	CIListNode* newTail = createNewListNode(id, theSum, importance, NULL);
 	insertNodeToEndList(lst, newTail);
-
-	return newTail;
 }
 
 // This function creates a new CIListNode, insert it with the given data, and returns it.
@@ -189,7 +178,7 @@ void createAidArray(MusiciansDetails* aidArr, Musician** performers, int size, i
 
 // This function searches for a given instrument (which 'wanted' is its id) in a given MPIList and returns the insturment's price.
 // The musician play this instrument (so the if condition must will happen once every call of this function).
-int findPrice(int wanted, MPIListNode* head)
+float findPrice(int wanted, MPIListNode* head)
 {
 	MPIListNode* curr = head;
 
@@ -201,6 +190,8 @@ int findPrice(int wanted, MPIListNode* head)
 		else 
 			curr = curr->next;
 	}
+
+	return NOT_FOUND;
 }
 
 // This function sorts a given array of MusiciansDetails recursively.
@@ -214,7 +205,7 @@ void mergeMusicians(MusiciansDetails* aidArr, int size, int direct)
 	mergeMusicians(aidArr, size / 2, direct);
 	mergeMusicians(aidArr + size / 2, size - size / 2, direct);
 
-	tmpArr = (char**)malloc(size * sizeof(char*));
+	tmpArr = (MusiciansDetails*)malloc(size * sizeof(MusiciansDetails));
 	checkAllocation(tmpArr);
 
 	mergeM(aidArr, size / 2, aidArr + size / 2, size - size / 2, tmpArr, direct);
@@ -334,7 +325,7 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 
 	for (i = ZERO; i < optionArrSize; i++)
 	{
-		for (j = ZERO; j < lSize; j++)
+		for (j = ZERO; j < *lSize; j++)
 		{
 			if (options[i]->name != busy[j].name)
 				found = true;
@@ -343,7 +334,7 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 		if (found == true)
 		{
 			busy[*lSize] = *(options[i]);
-			lSize++;
+			(*lSize)++;
 			if (*lSize == *pSize)
 			{
 				(*pSize) *= 2;
@@ -425,27 +416,25 @@ int findAskedPrice(Musician artist, int id)
 		if (curr->data.insId == id) 
 			return curr->data.price;
 	}
+
+	return NOT_FOUND;
 }
 
-// This function free a given list of concerts, and the concerts' instruments lists.
-void freeConcerts(Concert* allConcerts, int size) 
+// This function free a given concerts' instruments lists, and the concert itself.
+void freeConcert(Concert* aConcert) 
 {
-	int i;
 	CIListNode *curr, *tmp;
 
-	for (i = ZERO; i < size; i++) 
-	{
-		curr = allConcerts->instrument.head;
+	curr = aConcert->instrument.head;
 
-		while (curr != NULL) 
-		{
-			tmp = curr->next;
-			free(curr);
-			curr = tmp;
-		}
+	while (curr != NULL) 
+	{
+		tmp = curr->next;
+		free(curr);
+		curr = tmp;
 	}
 
-	free(allConcerts);
+	free(aConcert);
 }
 
 // This function free all the dynamically allocated memory from the given arrays and tree.
