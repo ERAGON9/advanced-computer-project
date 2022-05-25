@@ -334,18 +334,17 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 
 	for (i = ZERO; i < optionArrSize; i++)
 	{
-		for (j = ZERO; (j < lSize) && (found == true); j++) 
+		for (j = ZERO; (j < lSize) && (found == false); j++) 
 		{
-			if (options[i]->name == busy[j].name) 
+			if (options[i]->name != busy[j].name) 
 				found = true;
 		}
-		if (found == false)
+
+		if (found == true)
 		{
 			inx = i;
 			i = optionArrSize;
 		}
-		else 
-			found = false;
 	}
 
 	if (inx != -1)
@@ -384,7 +383,7 @@ void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* ro
 	{
 		instName = findInstrumentName(root, curr->data.inst);
 
-		for (int i = inx; i < curr->data.num; inx++, i++) 
+		for (int i = inx; i < (curr->data.num + inx); inx++, i++) 
 		{
 			tmpPrice = findAskedPrice(performers[i], curr->data.inst);
 			printf("%s ", performers[i].name);
