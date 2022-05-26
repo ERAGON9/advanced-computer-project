@@ -49,6 +49,7 @@ char* readLineFromTheUser()
 		scanf("%c ", &ch);
 	}
 	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
+	checkAllocation(string);
 	string[stringLogSize] = EMPTY_ROW;
 
 	return string;
@@ -339,6 +340,7 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 			{
 				(*pSize) *= 2;
 				busy = (Musician*)realloc(busy, sizeof(Musician) * (*pSize));
+				checkAllocation(busy);
 			}
 			return found;
 		}

@@ -16,7 +16,8 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 {
 	int id = ZERO;
 	InstrumentTree instrumentTr;
-	char* instrumentName;
+	char* instrumentName = (char*)malloc(sizeof(char) * MAX_LINE);
+	checkAllocation(instrumentName);
 
 	fgets(instrumentName, MAX_LINE, text); // Creating the root of the tree.
 
@@ -31,7 +32,7 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 	}
 
 	*count = id;
-
+	free(instrumentName);
 	return instrumentTr;
 }
 
