@@ -50,7 +50,7 @@ void manageConcert(Musician*** players, InstrumentTree inst, int* sizes);
 
 char* readLineFromTheUser();
 
-void newConcert(Concert theEvent, InstrumentTree tools, char* description);
+void newConcert(Concert* theEvent, InstrumentTree tools, char* description);
 
 float convertHour(char* hours, char* minutes);
 

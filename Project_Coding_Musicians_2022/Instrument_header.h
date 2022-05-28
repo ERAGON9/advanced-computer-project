@@ -38,8 +38,6 @@ void checkAllocation(void* ptr);
 
 InstrumentTree buildInstrumentsTree(FILE* text, int* count);
 
-//char** InstrumentsArr(FILE* txt, int* counter);
-
 void addNodeToBinaryTree(InstrumentTree res, char* string, int id);
 
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);

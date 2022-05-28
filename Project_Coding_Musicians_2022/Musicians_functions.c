@@ -61,7 +61,6 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
     }
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
-	//MusicianGroup = &tempMusicianGroup;
 	*MusicianGroup = tempMusicianGroup;
 	free(tempString);
 	return MusiciansLogicSize;            // logic size;
@@ -183,7 +182,7 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 
 		for (j = 0; j < mSize; j++) 
 		{
-			checkMusician(MusicianGroup[j], MusicianCollection[i], i, &logSize, &phySize);
+			checkMusician(MusicianGroup[j], &MusicianCollection[i], i, &logSize, &phySize);
 		}
 
 		if (phySize > logSize)
@@ -199,7 +198,7 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 
 // This function check if a given instrument's id ('id') matches one of the given musician's instruments' ids,
 // if it does a pointer to that musician will be added to the given array of pointers to musicians ('arr').
-void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize) 
+void checkMusician(Musician* player, Musician*** arr, int id, int* lSize, int* pSize) 
 {
 	MPIListNode* curr = player->instruments.head;
 	bool found = false;
@@ -214,19 +213,19 @@ void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pS
 
 	if (found == true) 
 	{
-		if (arr == NULL) // (*lSize) == ZERO
+		if ((*arr) == NULL) // (*lSize) == ZERO
 		{
 			*pSize = INITIAL;
-			arr = (Musician**)malloc(sizeof(Musician*) * (*pSize));
-			checkAllocation(arr);
+			*arr = (Musician**)malloc(sizeof(Musician*) * (*pSize));
+			checkAllocation((*arr));
 		}
 		else if (lSize == pSize)
 		{
 				(*pSize) *= 2;
-				arr = (Musician**)realloc(arr, sizeof(Musician*) * (*pSize));
-				checkAllocation(arr);
+				*arr = (Musician**)realloc((*arr), sizeof(Musician*) * (*pSize));
+				checkAllocation((*arr));
 		}
-		arr[(*lSize)] = player;
+		(*arr)[(*lSize)] = player;
 		(*lSize)++;
 	}
 }
