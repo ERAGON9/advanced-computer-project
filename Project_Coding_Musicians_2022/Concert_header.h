@@ -80,7 +80,7 @@ void insertMusicians(Musician** performers, MusiciansDetails* aidArr, int size);
 
 void setUpConcert(Concert show, Musician*** artists, int* sizes, TreeNode* root);
 
-bool addMusician(Musician** options, int size, Musician* busy, int* lSize, int* pSize);
+bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize, int needed);
 
 void printConcert(Concert theEvent, Musician* performers, int size, TreeNode* root);
 
