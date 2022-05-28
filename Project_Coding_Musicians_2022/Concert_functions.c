@@ -304,9 +304,10 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 
 	while (curr != NULL && proceed == true)
 	{
-		for (i = ZERO; (i < curr->data.num) && (proceed == true); i++)
-		{
-			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize);
+		if (curr->data.num > sizes[curr->data.inst]) 
+			proceed = false;
+		else {
+			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
 		}
 
 		curr = curr->next;
@@ -321,29 +322,29 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 	free(taken);
 }
 
-// This function runs on a given array of pointers to musicians ('options'), and checks if a musician doesn't
-// exist in the given array of musicians ('busy'). If it doesn't, the musician will be added to 'busy'.
-// If the function couldn't find a musician, it will return false, otherwise the function will return true.
-bool addMusician(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize)
+//This function runs on a given array of pointers to musicians ('options'), and for each musician it checks 
+//if it's name is in the array of taken musicians ('busy'). If it doesn't, the function will add the musician
+//to 'busy'. If the amount of musicians which were added to 'busy' by the function equals to 'needed',
+//the function will return true. Else, it will return false. (the 'for' loop will stop when eather the amount
+//of found musicians equals to 'needed', or when it went over all the musicians in the given array 'options')
+bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize, int needed)
 {
-	bool found = false;
-	int i, j;
+	bool found;
+	int i, j, counter = 0;
 
-	for (i = ZERO; i < optionArrSize; i++)
+	for (i = ZERO; i < optionArrSize && counter < needed; i++)
 	{
-		if (*lSize == 0) {
-			found = true;
-		}
-		else {
-			for (j = ZERO; j < *lSize; j++)
-			{
-				if (options[i]->name != (*busy)[j].name)
-					found = true;
-			}
+		found = false; 
+
+		for (j = ZERO; j < *lSize; j++)
+		{
+			if (options[i]->name == (*busy)[j].name)
+				found = true;
 		}
 
-		if (found == true)
+		if (found == false)
 		{
+			counter++;
 			(*busy)[*lSize] = *(options[i]);
 			(*lSize)++;
 			if (*lSize == *pSize)
@@ -352,11 +353,13 @@ bool addMusician(Musician** options, int optionArrSize, Musician** busy, int* lS
 				(*busy) = (Musician*)realloc((*busy), sizeof(Musician) * (*pSize));
 				checkAllocation((*busy));
 			}
-			return found;
 		}
 	}
 
-	return found;
+	if (counter == needed) 
+		return true;
+	else 
+		return false;
 }
 
 // This function prints a given concert's details, including its name, date and attending 
@@ -370,19 +373,16 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	int inx = ZERO, tmpPrice, i, j, sumPrice = ZERO;
 
 	printf("%s ", theEvent.name);
-	if (theEvent.date_of_concert.day > 9) {
+	if (theEvent.date_of_concert.day > 9) 
 		printf("%d ", theEvent.date_of_concert.day);
-	}
-	else {
+	else 
 		printf("0%d ", theEvent.date_of_concert.day);
-	}
 
-	if (theEvent.date_of_concert.month > 9) {
+	if (theEvent.date_of_concert.month > 9) 
 		printf("%d ", theEvent.date_of_concert.month);
-	}
-	else {
+	else 
 		printf("0%d ", theEvent.date_of_concert.month);
-	}
+	
 	printf("%d ", theEvent.date_of_concert.year);
 	printf("%d:%d: ", hours, minutes);
 
@@ -396,12 +396,18 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 			for(j = ZERO; j< busy[i].nameSize; j++)
 				printf("%s ", busy[i].name[j]);
 			printf("- %s ", instName);
-			printf("(%d), ", tmpPrice);
+			printf("(%d)", tmpPrice);
+
+			if (i == (curr->data.num + inx - 1)) 
+				printf(". ");
+			else 
+				printf(", ");
+
 			sumPrice += tmpPrice;
 		}
 		curr = curr->next;
 	}
-	printf("%d\n", sumPrice);
+	printf("Total cost: %d.\n", sumPrice);
 }
 
 // This function runs recursively on a given tree and searches for a node which it's 'insId'
