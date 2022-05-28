@@ -21,7 +21,9 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 {
 	int MusiciansLogicSize = ZERO, namePhysicSize, nameLogicSize;
     Musician** tempMusicianGroup = *MusicianGroup;
-    char seps[] = " ,.;:?!-\t'()[]{}<>~_", *token;
+	char seps[] = " ,.;:?!-\t'()[]{}<>~_\n";
+	char* token = (char*)malloc(sizeof(char)* MAX_NAME);
+	checkAllocation(token);
 	char* tempString = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(tempString);
 
@@ -55,11 +57,12 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 		musician->nameSize = nameLogicSize;
 		tempMusicianGroup[MusiciansLogicSize] = musician;
 		MusiciansLogicSize++;
-		clearString(tempString);
+		tempString[0] = '\0';
     }
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
-	MusicianGroup = &tempMusicianGroup;
+	//MusicianGroup = &tempMusicianGroup;
+	*MusicianGroup = tempMusicianGroup;
 	free(tempString);
 	return MusiciansLogicSize;            // logic size;
 }
@@ -159,18 +162,6 @@ void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode)
 	{
 		musician->instruments.tail->next = mpiNode;
 		musician->instruments.tail = mpiNode;
-	}
-}
-
-// The function gets a char* (string).
-// It emptys every char at the string (switch the char with a space).
-void clearString(char* string)
-{
-	int i = 0;
-
-	while (string[i] != '\0')
-	{
-		string[i] = ' ';
 	}
 }
 

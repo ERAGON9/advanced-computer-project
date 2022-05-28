@@ -14,12 +14,14 @@ void checkAllocation(void* ptr)
 // Also the function return as output value the amount of nodes at the tree (the amount of different instruments).
 InstrumentTree buildInstrumentsTree(FILE* text, int* count) 
 {
-	int id = ZERO;
+	int id = ZERO, len;
 	InstrumentTree instrumentTr;
 	char* instrumentName = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(instrumentName);
 
 	fgets(instrumentName, MAX_LINE, text); // Creating the root of the tree.
+	len = strlen(instrumentName);
+	instrumentName[len - 1] = END_LINE;
 
 	TreeNode* rootNode = newTreeNode(instrumentName, id);
 	instrumentTr.root = rootNode;
@@ -27,6 +29,8 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 
 	while (fgets(instrumentName, MAX_LINE, text) != NULL) // Creating the binary tree.
 	{
+		len = strlen(instrumentName);
+		instrumentName[len - 1] = END_LINE;
 		addNodeToBinaryTree(instrumentTr, instrumentName, id);
 		id++;
 	}
@@ -77,7 +81,11 @@ TreeNode* newTreeNode(char* data, int Id)
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
 	checkAllocation(res);
 
-	res->instrument = data;
+	char* newString = (char*)malloc(sizeof(char) * strlen(data));
+	checkAllocation(newString);
+	strcpy(newString, data);
+
+	res->instrument = newString;
 	res->insId = Id;
 	res->left = res->right = NULL;
 

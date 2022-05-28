@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Instrument_header.h"
-
+#define EMPTY_STRING "/0"
+#define MAX_NAME 50
 
 typedef struct
 {
@@ -58,8 +59,6 @@ bool isInstrument(InstrumentTree instTree, char* string);
 MPIListNode* initializeMPINode(InstrumentTree instTree, char* token, char* seps);
 
 void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode);
-
-void clearString(char* string);
 
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes);
 

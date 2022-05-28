@@ -33,9 +33,9 @@ char* readLineFromTheUser()
 	char ch, * string = (char*)malloc(sizeof(char) * stringPhySize);
 	checkAllocation(string);
 
-	scanf("%c ", &ch);
+	//scanf("%c ", &ch);
 
-	while (ch != END_OF_LINE)
+	while ((ch = getchar()) != '\n' && ch != EOF)
 	{
 		if (stringLogSize == stringPhySize)
 		{
@@ -46,7 +46,7 @@ char* readLineFromTheUser()
 		string[stringLogSize] = ch;
 		stringLogSize++;
 
-		scanf("%c ", &ch);
+		//scanf("%c ", &ch);
 	}
 	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
 	checkAllocation(string);
@@ -59,10 +59,14 @@ char* readLineFromTheUser()
 void newConcert(Concert theEvent, InstrumentTree instrumentsTr, char* description)
 {
 	char seps[] = " :", *token;
+	int size;
 
 	makeEmptyList(&(theEvent.instrument));
 
 	token = strtok(description, seps);
+	size = strlen(token);
+	theEvent.name = (char*)malloc(sizeof(char) * size);
+	checkAllocation(theEvent.name);
 	strcpy(theEvent.name, token);
 	token = strtok(NULL, seps);
 	sscanf(token, "%d", &theEvent.date_of_concert.day);

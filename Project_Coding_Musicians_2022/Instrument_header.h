@@ -16,6 +16,7 @@
 #define ONE 1
 #define FIRST_FILE 1
 #define SECOUND_FILE 2
+#define END_LINE '\0'
 
 typedef struct treeNode
 {
