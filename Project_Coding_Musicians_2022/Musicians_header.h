@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Instrument_header.h"
-#define EMPTY_STRING "/0"
 
 typedef struct
 {

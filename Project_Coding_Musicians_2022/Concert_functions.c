@@ -18,9 +18,13 @@ void manageConcert(Musician*** MusicianCollection, InstrumentTree inst, int* siz
 		checkAllocation(aConcert);
 
 		newConcert(aConcert, inst, line);
+
 		reorderCollection(*aConcert, MusicianCollection, sizes);
+
 		setUpConcert(*aConcert, MusicianCollection, sizes, inst.root);
+
 		freeConcert(aConcert);
+
 		line = readLineFromTheUser();
 	}
 }
@@ -44,7 +48,8 @@ char* readLineFromTheUser()
 		string[stringLogSize] = ch;
 		stringLogSize++;
 	}
-	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
+
+	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1)); // add +1 for '\0' at the end of the string.
 	checkAllocation(string);
 	string[stringLogSize] = EMPTY_ROW;
 
@@ -63,17 +68,17 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	token = strtok(description, seps);
 	size = strlen(token);
-	theEvent->name = (char*)malloc(sizeof(char) * size);
+	theEvent->name = (char*)malloc(sizeof(char) * (size++)); // add +1 for the '\0'
 	checkAllocation(theEvent->name);
 	strcpy(theEvent->name, token);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.day);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.month);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.year);
-	token = strtok(NULL, seps);
-	theEvent->date_of_concert.hour = convertHour(token, strtok(NULL, seps));
+
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.day);
+
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.month);
+	
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.year);
+
+	theEvent->date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
 
 	token = strtok(NULL, seps);
 
@@ -83,7 +88,14 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 		token = strtok(NULL, seps);
 	}
 
+	free(description);
 	free(token);
+}
+
+// This function receives a pointer to a newly created CIList, and inserts NULL to its head and tail.
+void makeEmptyList(CIList* new)
+{
+	new->head = new->tail = NULL;
 }
 
 // This function receives the strings 'hours' and 'minutes' (self explenatory) and converts them to 
@@ -99,11 +111,6 @@ float convertHour(char* hours, char* minutes)
 	return res;
 }
 
-// This function receives a pointer to a newly created CIList, and inserts NULL to its head and tail.
-void makeEmptyList(CIList* new) 
-{
-	new->head = new->tail = NULL;
-}
 
 // This function creates a new CIListNode and insert it with the given details.
 // The function will insert the newly created node to the end of the given list.
@@ -164,8 +171,11 @@ void reorderMusicians(Musician** players, int direction, int size, int id)
 	checkAllocation(tmpArr);
 
 	createAidArray(tmpArr, players, size, id);
+
 	mergeMusicians(tmpArr, size, direction);
+
 	insertMusicians(players, tmpArr, size);
+
 	free(tmpArr);
 }
 
@@ -304,9 +314,12 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 
 	while (curr != NULL && proceed == true)
 	{
-		if (curr->data.num > sizes[curr->data.inst]) 
+
+		if (curr->data.num > sizes[curr->data.inst])
 			proceed = false;
-		else {
+
+		else 
+		{
 			proceed = addMusicians(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
 		}
 
@@ -347,6 +360,7 @@ bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* l
 			counter++;
 			(*busy)[*lSize] = *(options[i]);
 			(*lSize)++;
+
 			if (*lSize == *pSize)
 			{
 				(*pSize) *= 2;
@@ -362,15 +376,16 @@ bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* l
 		return false;
 }
 
-// This function prints a given concert's details, including its name, date and attending 
-// players including the instrument they will be using and the price they ask for.
+
+// This function prints a given concert's details: it's name, date, attending players with the instrument they will be using,
+// the price they ask for the play and the total cost of the concert.
 void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 {
 	int hours = (int)theEvent.date_of_concert.hour;
 	int minutes = ((int)(theEvent.date_of_concert.hour) % 1) * HOUR;
 	CIListNode* curr = theEvent.instrument.head;
 	char* instName;
-	int inx = ZERO, tmpPrice, i, j, sumPrice = ZERO;
+	int i, j, inx = ZERO, tmpPrice, sumPrice = ZERO;
 
 	printf("%s ", theEvent.name);
 	if (theEvent.date_of_concert.day > 9) 
@@ -393,12 +408,15 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 		for (i = ZERO; i < curr->data.num; inx++, i++)
 		{
 			tmpPrice = findAskedPrice(busy[inx], curr->data.inst);
-			for(j = ZERO; j< busy[inx].nameSize; j++)
+
+			for (j = ZERO; j < busy[inx].nameSize; j++)
 				printf("%s ", busy[inx].name[j]);
+
 			printf("- %s ", instName);
+
 			printf("(%d)", tmpPrice);
 
-			if (i == (curr->data.num + inx - 1)) 
+			if ((inx + 1) == size)
 				printf(". ");
 			else 
 				printf(", ");
@@ -449,7 +467,7 @@ int findAskedPrice(Musician artist, int id)
 	return NOT_FOUND;
 }
 
-// This function free a given concerts' instruments lists, and the concert itself.
+// This function free a given concert instruments lists, the concert name and the concert itself.
 void freeConcert(Concert* aConcert) 
 {
 	CIListNode *curr, *tmp;
@@ -462,6 +480,8 @@ void freeConcert(Concert* aConcert)
 		free(curr);
 		curr = tmp;
 	}
+
+	free(aConcert->name);
 
 	free(aConcert);
 }
@@ -505,6 +525,7 @@ void freeTreeRec(TreeNode* root)
 	{
 		freeTreeRec(root->left);
 		freeTreeRec(root->right);
+
 		free(root->instrument);
 		free(root);
 	}
