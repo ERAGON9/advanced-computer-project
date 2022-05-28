@@ -169,6 +169,7 @@ void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode)
 // Each array's index in the outer array equal to an instrument's id, and includes the pointers 
 // to all the musicians which can play that instrument.
 //('iSize' - The amount of different existing instruments. 'mSize' - The amount of musicians (the amount of all the musician)).
+// sizes is a output int array that save the number of musicians play each instrument.
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes)
 {
 	int logSize, phySize, i, j;
@@ -182,7 +183,7 @@ Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize,
 
 		for (j = 0; j < mSize; j++) 
 		{
-			checkMusician(MusicianGroup[j], &MusicianCollection[i], i, &logSize, &phySize);
+			checkMusician(MusicianGroup[j], &(MusicianCollection[i]), i, &logSize, &phySize);
 		}
 
 		if (phySize > logSize)

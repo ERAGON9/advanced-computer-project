@@ -18,9 +18,13 @@ void manageConcert(Musician*** MusicianCollection, InstrumentTree inst, int* siz
 		checkAllocation(aConcert);
 
 		newConcert(aConcert, inst, line);
+
 		reorderCollection(*aConcert, MusicianCollection, sizes);
+
 		setUpConcert(*aConcert, MusicianCollection, sizes, inst.root);
+
 		freeConcert(aConcert);
+
 		line = readLineFromTheUser();
 	}
 }
@@ -33,9 +37,7 @@ char* readLineFromTheUser()
 	char ch, * string = (char*)malloc(sizeof(char) * stringPhySize);
 	checkAllocation(string);
 
-	//scanf("%c ", &ch);
-
-	while ((ch = getchar()) != '\n' && ch != EOF)
+	while ((ch = getchar()) != '\n')
 	{
 		if (stringLogSize == stringPhySize)
 		{
@@ -45,10 +47,9 @@ char* readLineFromTheUser()
 		}
 		string[stringLogSize] = ch;
 		stringLogSize++;
-
-		//scanf("%c ", &ch);
 	}
-	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
+
+	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1)); // add +1 for '\0' at the end of the string.
 	checkAllocation(string);
 	string[stringLogSize] = EMPTY_ROW;
 
@@ -65,7 +66,7 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	token = strtok(description, seps);
 	size = strlen(token);
-	theEvent->name = (char*)malloc(sizeof(char) * size);
+	theEvent->name = (char*)malloc(sizeof(char) * (size + 1)); // add +1 for the '\0'
 	checkAllocation(theEvent->name);
 	strcpy(theEvent->name, token);
 	token = strtok(NULL, seps);
@@ -85,6 +86,12 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 	}
 }
 
+// This function receives a pointer to a newly created CIList, and inserts NULL to its head and tail.
+void makeEmptyList(CIList* new)
+{
+	new->head = new->tail = NULL;
+}
+
 // This function receives the strings 'hours' and 'minutes' (self explenatory) and converts them to 
 // a float number, represent the given time in decimal form.
 float convertHour(char* hours, char* minutes) 
@@ -98,11 +105,6 @@ float convertHour(char* hours, char* minutes)
 	return res;
 }
 
-// This function receives a pointer to a newly created CIList, and inserts NULL to its head and tail.
-void makeEmptyList(CIList* new) 
-{
-	new->head = new->tail = NULL;
-}
 
 // This function creates a new CIListNode and insert it with the given details.
 // The function will insert the newly created node to the end of the given list.
@@ -303,9 +305,12 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 
 	while (curr != NULL && proceed == true)
 	{
-		for (i = ZERO; (i < curr->data.num) && (proceed == true); i++)
+		if (curr->data.num > sizes[curr->data.inst])
+			proceed = false;
+
+		else 
 		{
-			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], taken, &logSize, &phySize);
+			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
 		}
 
 		curr = curr->next;
@@ -320,46 +325,51 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 	free(taken);
 }
 
-// This function runs on a given array of pointers to musicians ('options'), and checks if a musician doesn't
-// exist in the given array of musicians ('busy'). If it doesn't, the musician will be added to 'busy'.
-// If the function couldn't find a musician, it will return false, otherwise the function will return true.
-bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSize, int* pSize)
+
+//This function runs on a given array of pointers to musicians ('options'), and for each musician it checks 
+//if it's name is in the array of taken musicians ('busy'). If it doesn't, the function will add the musician
+//to 'busy'. If the amount of musicians which were added to 'busy' by the function equals to 'needed',
+//the function will return true. Else, it will return false. (the 'for' loop will stop when eather the amount
+//of found musicians equals to 'needed', or when it went over all the musicians in the given array 'options')
+bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize, int needed)
 {
-	bool found = false;
-	int i, j;
+	bool found;
+	int i, j, counter = 0;
 
-	for (i = ZERO; i < optionArrSize; i++)
+	for (i = ZERO; i < optionArrSize && counter < needed; i++)
 	{
-		if (*lSize == 0) {
-			found = true;
-		}
-		else {
-			for (j = ZERO; j < *lSize; j++)
-			{
-				if (options[i]->name != busy[j].name)
-					found = true;
-			}
+		found = false;
+
+		for (j = ZERO; j < *lSize; j++)
+		{
+			if (options[i]->name == (*busy)[j].name)
+				found = true;
 		}
 
-		if (found == true)
+		if (found == false)
 		{
-			busy[*lSize] = *(options[i]);
+			counter++;
+			(*busy)[*lSize] = *(options[i]);
 			(*lSize)++;
+
 			if (*lSize == *pSize)
 			{
 				(*pSize) *= 2;
-				busy = (Musician*)realloc(busy, sizeof(Musician) * (*pSize));
-				checkAllocation(busy);
+				(*busy) = (Musician*)realloc((*busy), sizeof(Musician) * (*pSize));
+				checkAllocation((*busy));
 			}
-			return found;
 		}
 	}
 
-	return found;
+	if (counter == needed)
+		return true;
+	else
+		return false;
 }
 
-// This function prints a given concert's details, including its name, date and attending 
-// players including the instrument they will be using and the price they ask for.
+
+// This function prints a given concert's details: it's name, date, attending players with the instrument they will be using,
+// the price they ask for the play and the total cost of the concert.
 void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 {
 	int hours = (int)theEvent.date_of_concert.hour;
@@ -372,7 +382,7 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	printf("%d ", theEvent.date_of_concert.day);
 	printf("%d ", theEvent.date_of_concert.month);
 	printf("%d ", theEvent.date_of_concert.year);
-	printf("%d:%d\n", hours, minutes);
+	printf("%d:%d: ", hours, minutes);
 
 	while (curr != NULL)
 	{
