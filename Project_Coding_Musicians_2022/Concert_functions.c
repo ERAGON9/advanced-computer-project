@@ -33,9 +33,7 @@ char* readLineFromTheUser()
 	char ch, * string = (char*)malloc(sizeof(char) * stringPhySize);
 	checkAllocation(string);
 
-	//scanf("%c ", &ch);
-
-	while ((ch = getchar()) != '\n' && ch != EOF)
+	while ((ch = getchar()) != '\n')
 	{
 		if (stringLogSize == stringPhySize)
 		{
@@ -45,8 +43,6 @@ char* readLineFromTheUser()
 		}
 		string[stringLogSize] = ch;
 		stringLogSize++;
-
-		//scanf("%c ", &ch);
 	}
 	string = (char*)realloc(string, sizeof(char) * (stringLogSize + 1));
 	checkAllocation(string);
@@ -58,8 +54,10 @@ char* readLineFromTheUser()
 // This function receives a concert's details into 'theEvent'.
 void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* description)
 {
-	char seps[] = " :", *token;
 	int size;
+	char seps[] = " :";
+	char* token = (char*)malloc(sizeof(char)* MAX_LINE);
+	checkAllocation(token);
 
 	makeEmptyList(&(theEvent->instrument));
 
@@ -74,7 +72,8 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 	sscanf(token, "%d", &theEvent->date_of_concert.month);
 	token = strtok(NULL, seps);
 	sscanf(token, "%d", &theEvent->date_of_concert.year);
-	theEvent->date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
+	token = strtok(NULL, seps);
+	theEvent->date_of_concert.hour = convertHour(token, strtok(NULL, seps));
 
 	token = strtok(NULL, seps);
 
@@ -83,6 +82,8 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
 		token = strtok(NULL, seps);
 	}
+
+	free(token);
 }
 
 // This function receives the strings 'hours' and 'minutes' (self explenatory) and converts them to 
@@ -305,7 +306,7 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 	{
 		for (i = ZERO; (i < curr->data.num) && (proceed == true); i++)
 		{
-			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], taken, &logSize, &phySize);
+			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize);
 		}
 
 		curr = curr->next;
@@ -323,7 +324,7 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 // This function runs on a given array of pointers to musicians ('options'), and checks if a musician doesn't
 // exist in the given array of musicians ('busy'). If it doesn't, the musician will be added to 'busy'.
 // If the function couldn't find a musician, it will return false, otherwise the function will return true.
-bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSize, int* pSize)
+bool addMusician(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize)
 {
 	bool found = false;
 	int i, j;
@@ -336,20 +337,20 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 		else {
 			for (j = ZERO; j < *lSize; j++)
 			{
-				if (options[i]->name != busy[j].name)
+				if (options[i]->name != (*busy)[j].name)
 					found = true;
 			}
 		}
 
 		if (found == true)
 		{
-			busy[*lSize] = *(options[i]);
+			(*busy)[*lSize] = *(options[i]);
 			(*lSize)++;
 			if (*lSize == *pSize)
 			{
 				(*pSize) *= 2;
-				busy = (Musician*)realloc(busy, sizeof(Musician) * (*pSize));
-				checkAllocation(busy);
+				(*busy) = (Musician*)realloc((*busy), sizeof(Musician) * (*pSize));
+				checkAllocation((*busy));
 			}
 			return found;
 		}
@@ -369,10 +370,21 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	int inx = ZERO, tmpPrice, i, j, sumPrice = ZERO;
 
 	printf("%s ", theEvent.name);
-	printf("%d ", theEvent.date_of_concert.day);
-	printf("%d ", theEvent.date_of_concert.month);
+	if (theEvent.date_of_concert.day > 9) {
+		printf("%d ", theEvent.date_of_concert.day);
+	}
+	else {
+		printf("0%d ", theEvent.date_of_concert.day);
+	}
+
+	if (theEvent.date_of_concert.month > 9) {
+		printf("%d ", theEvent.date_of_concert.month);
+	}
+	else {
+		printf("0%d ", theEvent.date_of_concert.month);
+	}
 	printf("%d ", theEvent.date_of_concert.year);
-	printf("%d:%d\n", hours, minutes);
+	printf("%d:%d: ", hours, minutes);
 
 	while (curr != NULL)
 	{
@@ -383,8 +395,8 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 			tmpPrice = findAskedPrice(busy[i], curr->data.inst);
 			for(j = ZERO; j< busy[i].nameSize; j++)
 				printf("%s ", busy[i].name[j]);
-			printf("%s ", instName);
-			printf("%d\n", tmpPrice);
+			printf("- %s ", instName);
+			printf("(%d), ", tmpPrice);
 			sumPrice += tmpPrice;
 		}
 		curr = curr->next;

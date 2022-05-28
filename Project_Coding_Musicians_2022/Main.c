@@ -21,12 +21,14 @@ void main(int argc, char* argv[])
     Musician** MusiciansGroup;
     Musician*** MusiciansCollection;
 
-    instrumentsFile = fopen(argv[FIRST_FILE], "r");
+    //instrumentsFile = fopen(argv[FIRST_FILE], "r");
+    instrumentsFile = fopen("instruments.txt", "r");
     checkFile(instrumentsFile);
 
     instruments = buildInstrumentsTree(instrumentsFile, &instCount);
 
-    musiciansFile = fopen(argv[SECOUND_FILE], "r");
+    //musiciansFile = fopen(argv[SECOUND_FILE], "r");
+    musiciansFile = fopen("musicians.txt", "r");
     checkFile(musiciansFile);
 
     int* countSizes = (int*)malloc(sizeof(int) * instCount);
