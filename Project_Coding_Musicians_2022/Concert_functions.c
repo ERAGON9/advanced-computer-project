@@ -307,7 +307,7 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 		if (curr->data.num > sizes[curr->data.inst]) 
 			proceed = false;
 		else {
-			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
+			proceed = addMusicians(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
 		}
 
 		curr = curr->next;
@@ -324,9 +324,9 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 
 //This function runs on a given array of pointers to musicians ('options'), and for each musician it checks 
 //if it's name is in the array of taken musicians ('busy'). If it doesn't, the function will add the musician
-//to 'busy'. If the amount of musicians which were added to 'busy' by the function equals to 'needed',
-//the function will return true. Else, it will return false. (the 'for' loop will stop when eather the amount
-//of found musicians equals to 'needed', or when it went over all the musicians in the given array 'options')
+//to 'busy'. If the amount of musicians which were added to 'busy' by the function ('counter') equals to 'needed',
+//the function will return true. Else, it will return false. (the 'for' loop will stop when either the amount
+//of found musicians equals to 'needed', or when it went over all the musicians in the given array 'options').
 bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* lSize, int* pSize, int needed)
 {
 	bool found;
@@ -390,11 +390,11 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	{
 		instName = findInstrumentName(root, curr->data.inst);
 
-		for (i = inx; i < (curr->data.num + inx); inx++, i++)
+		for (i = ZERO; i < curr->data.num; inx++, i++)
 		{
-			tmpPrice = findAskedPrice(busy[i], curr->data.inst);
-			for(j = ZERO; j< busy[i].nameSize; j++)
-				printf("%s ", busy[i].name[j]);
+			tmpPrice = findAskedPrice(busy[inx], curr->data.inst);
+			for(j = ZERO; j< busy[inx].nameSize; j++)
+				printf("%s ", busy[inx].name[j]);
 			printf("- %s ", instName);
 			printf("(%d)", tmpPrice);
 
