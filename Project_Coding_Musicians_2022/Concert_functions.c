@@ -68,17 +68,17 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	token = strtok(description, seps);
 	size = strlen(token);
-	theEvent->name = (char*)malloc(sizeof(char) * (size + 1)); // add +1 for the '\0'
+	theEvent->name = (char*)malloc(sizeof(char) * (size++)); // add +1 for the '\0'
 	checkAllocation(theEvent->name);
 	strcpy(theEvent->name, token);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.day);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.month);
-	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent->date_of_concert.year);
-	token = strtok(NULL, seps);
-	theEvent->date_of_concert.hour = convertHour(token, strtok(NULL, seps));
+
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.day);
+
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.month);
+	
+	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.year);
+
+	theEvent->date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
 
 	token = strtok(NULL, seps);
 
@@ -88,6 +88,7 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 		token = strtok(NULL, seps);
 	}
 
+	free(description);
 	free(token);
 }
 
@@ -170,8 +171,11 @@ void reorderMusicians(Musician** players, int direction, int size, int id)
 	checkAllocation(tmpArr);
 
 	createAidArray(tmpArr, players, size, id);
+
 	mergeMusicians(tmpArr, size, direction);
+
 	insertMusicians(players, tmpArr, size);
+
 	free(tmpArr);
 }
 
@@ -316,7 +320,7 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 
 		else 
 		{
-			proceed = addMusician(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
+			proceed = addMusicians(MusicianCollection[curr->data.inst], sizes[curr->data.inst], &taken, &logSize, &phySize, curr->data.num);
 		}
 
 		curr = curr->next;
@@ -381,7 +385,7 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	int minutes = ((int)(theEvent.date_of_concert.hour) % 1) * HOUR;
 	CIListNode* curr = theEvent.instrument.head;
 	char* instName;
-	int inx = ZERO, tmpPrice, i, j, sumPrice = ZERO;
+	int i, j, inx = ZERO, tmpPrice, sumPrice = ZERO;
 
 	printf("%s ", theEvent.name);
 	if (theEvent.date_of_concert.day > 9) 
@@ -401,15 +405,18 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 	{
 		instName = findInstrumentName(root, curr->data.inst);
 
-		for (i = inx; i < (curr->data.num + inx); inx++, i++)
+		for (i = ZERO; i < curr->data.num; inx++, i++)
 		{
-			tmpPrice = findAskedPrice(busy[i], curr->data.inst);
-			for(j = ZERO; j< busy[i].nameSize; j++)
-				printf("%s ", busy[i].name[j]);
+			tmpPrice = findAskedPrice(busy[inx], curr->data.inst);
+
+			for (j = ZERO; j < busy[inx].nameSize; j++)
+				printf("%s ", busy[inx].name[j]);
+
 			printf("- %s ", instName);
+
 			printf("(%d)", tmpPrice);
 
-			if (i == (curr->data.num + inx - 1)) 
+			if ((inx + 1) == size)
 				printf(". ");
 			else 
 				printf(", ");
@@ -460,7 +467,7 @@ int findAskedPrice(Musician artist, int id)
 	return NOT_FOUND;
 }
 
-// This function free a given concerts' instruments lists, and the concert itself.
+// This function free a given concert instruments lists, the concert name and the concert itself.
 void freeConcert(Concert* aConcert) 
 {
 	CIListNode *curr, *tmp;
@@ -473,6 +480,8 @@ void freeConcert(Concert* aConcert)
 		free(curr);
 		curr = tmp;
 	}
+
+	free(aConcert->name);
 
 	free(aConcert);
 }
@@ -516,6 +525,7 @@ void freeTreeRec(TreeNode* root)
 	{
 		freeTreeRec(root->left);
 		freeTreeRec(root->right);
+
 		free(root->instrument);
 		free(root);
 	}
