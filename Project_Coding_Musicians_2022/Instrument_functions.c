@@ -21,7 +21,7 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 
 	fgets(instrumentName, MAX_LINE, text); // Creating the root of the tree.
 	len = strlen(instrumentName);
-	instrumentName[len - 1] = END_LINE;
+	instrumentName[len - 1] = END_LINE; // remove the '/n' that added outomatic at function fgets().
 
 	TreeNode* rootNode = newTreeNode(instrumentName, id);
 	instrumentTr.root = rootNode;
@@ -30,7 +30,7 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 	while (fgets(instrumentName, MAX_LINE, text) != NULL) // Creating the binary tree.
 	{
 		len = strlen(instrumentName);
-		instrumentName[len - 1] = END_LINE;
+		instrumentName[len - 1] = END_LINE; 
 		addNodeToBinaryTree(instrumentTr, instrumentName, id);
 		id++;
 	}
@@ -40,6 +40,23 @@ InstrumentTree buildInstrumentsTree(FILE* text, int* count)
 	return instrumentTr;
 }
 
+// This function creates a new TreeNode and insert it with the given data (and NULL as its left and right nodes).
+// The function returns the newly created TreeNode.
+TreeNode* newTreeNode(char* data, int Id) 
+{
+	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
+	checkAllocation(res);
+
+	char* newString = (char*)malloc(sizeof(char) * strlen(data));
+	checkAllocation(newString);
+	strcpy(newString, data);
+
+	res->instrument = newString;
+	res->insId = Id;
+	res->left = res->right = NULL;
+
+	return res;
+}
 // The function get instrument tree (instrumentTr), the string to enter and a integer instrument id.
 // It's add to the binary tree new node in the correct place with the data (string) and the instrument id (id).
 void addNodeToBinaryTree(InstrumentTree instrumentTr, char* string, int id)
@@ -69,27 +86,9 @@ void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id)
 	{
 		if (compare > ZERO)
 			addNodeToBinaryTreeRec(trNode->right, data, id);
-		else
+		else // compare < ZERO
 			addNodeToBinaryTreeRec(trNode->left, data, id);
 	}
-}
-
-// This function creates a new TreeNode and insert it with the given data (and NULL as its left and right nodes).
-// The function returns the newly created TreeNode.
-TreeNode* newTreeNode(char* data, int Id) 
-{
-	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
-	checkAllocation(res);
-
-	char* newString = (char*)malloc(sizeof(char) * strlen(data));
-	checkAllocation(newString);
-	strcpy(newString, data);
-
-	res->instrument = newString;
-	res->insId = Id;
-	res->left = res->right = NULL;
-
-	return res;
 }
 
 // The function gets a tree of instruments and a string (instrument name).

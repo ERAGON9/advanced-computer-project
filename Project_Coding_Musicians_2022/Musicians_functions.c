@@ -22,24 +22,23 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	int MusiciansLogicSize = ZERO, namePhysicSize, nameLogicSize;
     Musician** tempMusicianGroup = *MusicianGroup;
 	char seps[] = " ,.;:?!-\t'()[]{}<>~_\n";
-	char* token = (char*)malloc(sizeof(char)* MAX_NAME);
+	char* token = (char*)malloc(sizeof(char)* MAX_LINE);
 	checkAllocation(token);
 	char* tempString = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(tempString);
 
-	while (fgets(tempString, MAX_LINE, musiciansFile) != NULL) 
+	while (fgets(tempString, MAX_LINE, musiciansFile) != NULL) // run on one line
 	{
 		updateMusicianGroupPhysicSizeArray(&tempMusicianGroup, MusiciansLogicSize, &MusiciansPhysicSize);
 		Musician* musician = initializeMusician(&namePhysicSize, &nameLogicSize);
         token = strtok(tempString, seps);
 
-        while (token != NULL)                         // run on one line (one string)
+        while (token != NULL)                         // run on one string
 		{
 			updateNamePhysicSizeArray(musician, nameLogicSize, &namePhysicSize);
 
 			if (nameLogicSize <= 1)                                    // the first two words must be the musician name.
 				addMusicianNameToArray(musician, token, &nameLogicSize);
-
             else
 			{
 				if (isInstrument(instTree, token) == false)           // not a instrument, so must be a part from the musician name.
@@ -57,12 +56,12 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 		musician->nameSize = nameLogicSize;
 		tempMusicianGroup[MusiciansLogicSize] = musician;
 		MusiciansLogicSize++;
-		tempString[0] = '\0';
+		tempString[0] = END_LINE;
     }
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
-	//MusicianGroup = &tempMusicianGroup;
 	*MusicianGroup = tempMusicianGroup;
+	free(token);
 	free(tempString);
 	return MusiciansLogicSize;            // logic size;
 }

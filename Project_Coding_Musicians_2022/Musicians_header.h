@@ -2,7 +2,6 @@
 
 #include "Instrument_header.h"
 #define EMPTY_STRING "/0"
-#define MAX_NAME 50
 
 typedef struct
 {

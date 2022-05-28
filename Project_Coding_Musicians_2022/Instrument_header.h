@@ -38,13 +38,11 @@ void checkAllocation(void* ptr);
 
 InstrumentTree buildInstrumentsTree(FILE* text, int* count);
 
-//char** InstrumentsArr(FILE* txt, int* counter);
+TreeNode* newTreeNode(char* data, int Id);
 
 void addNodeToBinaryTree(InstrumentTree res, char* string, int id);
 
 void addNodeToBinaryTreeRec(TreeNode* trNode, char* data, int id);
-
-TreeNode* newTreeNode(char* data, int Id);
 
 int findInsId(InstrumentTree tree, char* instrument);
 
