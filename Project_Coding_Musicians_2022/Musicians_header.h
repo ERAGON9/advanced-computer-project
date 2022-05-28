@@ -61,6 +61,4 @@ void addNodeToMusicianInstrumentsList(Musician* musician, MPIListNode* mpiNode);
 
 Musician*** constructMCollection(int iSize, Musician** MusicianGroup, int mSize, int* sizes);
 
-void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
-
-void checkMusician(Musician* player, Musician** arr, int id, int* lSize, int* pSize);
+void checkMusician(Musician* player, Musician*** arr, int id, int* lSize, int* pSize);

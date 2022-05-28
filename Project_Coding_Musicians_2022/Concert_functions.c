@@ -8,19 +8,19 @@
 void manageConcert(Musician*** MusicianCollection, InstrumentTree inst, int* sizes)
 {
 	char* line;
-	Concert* allConcerts;
+	Concert* aConcert;
 
 	line = readLineFromTheUser();
 
 	while (line[ZERO] != EMPTY_ROW) 
 	{
-		allConcerts = (Concert*)malloc(sizeof(Concert));
-		checkAllocation(allConcerts);
+		aConcert = (Concert*)malloc(sizeof(Concert));
+		checkAllocation(aConcert);
 
-		newConcert(*allConcerts, inst, line);
-		reorderCollection(*allConcerts, MusicianCollection, sizes);
-		setUpConcert(*allConcerts, MusicianCollection, sizes, inst.root);
-		freeConcert(allConcerts);
+		newConcert(aConcert, inst, line);
+		reorderCollection(*aConcert, MusicianCollection, sizes);
+		setUpConcert(*aConcert, MusicianCollection, sizes, inst.root);
+		freeConcert(aConcert);
 		line = readLineFromTheUser();
 	}
 }
@@ -56,31 +56,31 @@ char* readLineFromTheUser()
 }
 
 // This function receives a concert's details into 'theEvent'.
-void newConcert(Concert theEvent, InstrumentTree instrumentsTr, char* description)
+void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* description)
 {
 	char seps[] = " :", *token;
 	int size;
 
-	makeEmptyList(&(theEvent.instrument));
+	makeEmptyList(&(theEvent->instrument));
 
 	token = strtok(description, seps);
 	size = strlen(token);
-	theEvent.name = (char*)malloc(sizeof(char) * size);
-	checkAllocation(theEvent.name);
-	strcpy(theEvent.name, token);
+	theEvent->name = (char*)malloc(sizeof(char) * size);
+	checkAllocation(theEvent->name);
+	strcpy(theEvent->name, token);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent.date_of_concert.day);
+	sscanf(token, "%d", &theEvent->date_of_concert.day);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent.date_of_concert.month);
+	sscanf(token, "%d", &theEvent->date_of_concert.month);
 	token = strtok(NULL, seps);
-	sscanf(token, "%d", &theEvent.date_of_concert.year);
-	theEvent.date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
+	sscanf(token, "%d", &theEvent->date_of_concert.year);
+	theEvent->date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
 
 	token = strtok(NULL, seps);
 
 	while (token != NULL)
 	{
-		insertDataToEndList(&(theEvent.instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
+		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
 		token = strtok(NULL, seps);
 	}
 }
@@ -330,10 +330,15 @@ bool addMusician(Musician** options, int optionArrSize, Musician* busy, int* lSi
 
 	for (i = ZERO; i < optionArrSize; i++)
 	{
-		for (j = ZERO; j < *lSize; j++)
-		{
-			if (options[i]->name != busy[j].name)
-				found = true;
+		if (*lSize == 0) {
+			found = true;
+		}
+		else {
+			for (j = ZERO; j < *lSize; j++)
+			{
+				if (options[i]->name != busy[j].name)
+					found = true;
+			}
 		}
 
 		if (found == true)
