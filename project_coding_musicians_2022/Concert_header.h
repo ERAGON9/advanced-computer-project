@@ -52,11 +52,11 @@ char* readLineFromTheUser();
 
 void newConcert(Concert* theEvent, InstrumentTree tools, char* description);
 
-float convertHour(char* hours, char* minutes);
+float convertHour(char* minutes, char* hours);
 
 void makeEmptyList(CIList* new);
 
-void insertDataToEndList(CIList* lst, int id, char importance, char* sum);
+void insertDataToEndList(CIList* lst, int id, char* sum, char importance);
 
 CIListNode* createNewListNode(int type, int count, char significance, CIListNode* next);
 
