@@ -22,8 +22,7 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	int MusiciansLogicSize = ZERO, namePhysicSize, nameLogicSize;
     Musician** tempMusicianGroup = *MusicianGroup;
 	char seps[] = " ,.;:?!-\t'()[]{}<>~_\n";
-	char* token = (char*)malloc(sizeof(char)* MAX_LINE);
-	checkAllocation(token);
+	char* token;
 	char* tempString = (char*)malloc(sizeof(char) * MAX_LINE);
 	checkAllocation(tempString);
 
@@ -61,7 +60,6 @@ int fillMusicianGroup(Musician*** MusicianGroup, int MusiciansPhysicSize, FILE* 
 	tempMusicianGroup = (Musician**)realloc(tempMusicianGroup, sizeof(Musician**) * MusiciansLogicSize);
 	checkAllocation(tempMusicianGroup);
 	*MusicianGroup = tempMusicianGroup;
-	free(token);
 	free(tempString);
 	return MusiciansLogicSize;            // logic size;
 }
