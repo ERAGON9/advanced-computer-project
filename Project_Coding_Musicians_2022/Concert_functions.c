@@ -61,14 +61,13 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 {
 	int size;
 	char seps[] = " :";
-	char* token = (char*)malloc(sizeof(char)* MAX_LINE);
-	checkAllocation(token);
+	char* token, *name;
 
 	makeEmptyList(&(theEvent->instrument));
 
 	token = strtok(description, seps);
-	size = strlen(token);
-	theEvent->name = (char*)malloc(sizeof(char) * (size++)); // add +1 for the '\0'
+	size = strlen(token) + 1;  // add +1 for the '\0'
+	theEvent->name = (char*)malloc(sizeof(char) * size);
 	checkAllocation(theEvent->name);
 	strcpy(theEvent->name, token);
 
@@ -78,18 +77,20 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 	
 	sscanf(strtok(NULL, seps), "%d", &theEvent->date_of_concert.year);
 
-	theEvent->date_of_concert.hour = convertHour(strtok(NULL, seps), strtok(NULL, seps));
-
 	token = strtok(NULL, seps);
+	theEvent->date_of_concert.hour = convertHour(token, strtok(NULL, seps));
 
-	while (token != NULL)
+	name = strtok(NULL, seps);
+
+	while (name != NULL)
 	{
-		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
+
 		token = strtok(NULL, seps);
+		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, name), token, strtok(NULL, seps)[0]);
+		name = strtok(NULL, seps);
 	}
 
 	free(description);
-	free(token);
 }
 
 // This function receives a pointer to a newly created CIList, and inserts NULL to its head and tail.
@@ -98,7 +99,7 @@ void makeEmptyList(CIList* new)
 	new->head = new->tail = NULL;
 }
 
-// This function receives the strings 'hours' and 'minutes' (self explenatory) and converts them to 
+// This function receives the strings 'hours' and 'minutes' (self explanatory) and converts them to 
 // a float number, represent the given time in decimal form.
 float convertHour(char* hours, char* minutes) 
 {
@@ -155,11 +156,13 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 //  according to the price the musician ask and the importance of the instrument at that concert.
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
+	int importance;
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
 	{
-		reorderMusicians(MusicianCollection[curr->data.inst], curr->data.importance, sizes[curr->data.inst], curr->data.inst);
+		importance = curr->data.importance - '0';
+		reorderMusicians(MusicianCollection[curr->data.inst], importance, sizes[curr->data.inst], curr->data.inst);
 		curr = curr->next;
 	}
 }
