@@ -155,6 +155,7 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 //  according to the price the musician ask and the importance of the instrument at that concert.
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
+	int importance;
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
@@ -240,7 +241,7 @@ void mergeM(MusiciansDetails* a1, int n1, MusiciansDetails* a2, int n2, Musician
 	{
 		if (importance == 1) // 1 - important
 		{
-			if (a1->askedPrice > a2->askedPrice) 
+			if (a1[ind1].askedPrice > a2[ind2].askedPrice)
 			{
 				res[resInd] = a1[ind1];
 				ind1++;
@@ -517,10 +518,8 @@ void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musician
 		}
 		free(MusiciansGroup[i]);
 	}
-	free(MusiciansGroup);
 
-	for (i = ZERO; i < instCount; i++) // free the MusiciansCollection
-		free(MusiciansCollection[i]);
+	free(MusiciansGroup);
 	free(MusiciansCollection);
 
 	freeTreeRec(instruments.root); // free the instruments tree

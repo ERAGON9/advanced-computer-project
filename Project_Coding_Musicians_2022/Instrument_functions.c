@@ -47,7 +47,7 @@ TreeNode* newTreeNode(char* data, int Id)
 	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
 	checkAllocation(res);
 
-	char* newString = (char*)malloc(sizeof(char) * strlen(data));
+	char* newString = (char*)malloc(sizeof(char) * (strlen(data) + 1));
 	checkAllocation(newString);
 	strcpy(newString, data);
 
