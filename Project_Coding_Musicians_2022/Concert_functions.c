@@ -84,7 +84,7 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	while (token != NULL)
 	{
-		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
+		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps)[0], strtok(NULL, seps));
 		token = strtok(NULL, seps);
 	}
 
@@ -100,7 +100,7 @@ void makeEmptyList(CIList* new)
 
 // This function receives the strings 'hours' and 'minutes' (self explenatory) and converts them to 
 // a float number, represent the given time in decimal form.
-float convertHour(char* hours, char* minutes) 
+float convertHour(char* minutes, char* hours)
 {
 	float res, tmp;
 	
@@ -114,7 +114,7 @@ float convertHour(char* hours, char* minutes)
 
 // This function creates a new CIListNode and insert it with the given details.
 // The function will insert the newly created node to the end of the given list.
-void insertDataToEndList(CIList* lst, int id, char* sum, char importance)
+void insertDataToEndList(CIList* lst, int id, char importance, char* sum)
 {
 	int theSum;
 
@@ -156,10 +156,12 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
 	CIListNode* curr = aEvent.instrument.head;
+	int importance;
 
 	while (curr != NULL) 
 	{
-		reorderMusicians(MusicianCollection[curr->data.inst], curr->data.importance, sizes[curr->data.inst], curr->data.inst);
+		importance = curr->data.importance - '0';
+		reorderMusicians(MusicianCollection[curr->data.inst], importance, sizes[curr->data.inst], curr->data.inst);
 		curr = curr->next;
 	}
 }
@@ -399,7 +401,15 @@ void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 		printf("0%d ", theEvent.date_of_concert.month);
 	
 	printf("%d ", theEvent.date_of_concert.year);
-	printf("%d:%d: ", hours, minutes);
+	
+	if (hours > 9 && minutes > 9) 
+		printf("%d:%d: ", hours, minutes);
+	else if (hours > 9) 
+		printf("%d:0%d: ", hours, minutes);
+	else if(minutes > 9)
+		printf("0%d:%d: ", hours, minutes);
+	else 
+		printf("0%d:0%d: ", hours, minutes);
 
 	while (curr != NULL)
 	{
