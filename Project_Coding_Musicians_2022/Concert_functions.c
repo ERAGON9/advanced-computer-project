@@ -155,7 +155,6 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 //  according to the price the musician ask and the importance of the instrument at that concert.
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
-	int importance;
 	CIListNode* curr = aEvent.instrument.head;
 
 	while (curr != NULL) 
@@ -472,6 +471,7 @@ int findAskedPrice(Musician artist, int id)
 	{
 		if (curr->data.insId == id) 
 			return curr->data.price;
+		curr = curr->next;
 	}
 
 	return NOT_FOUND;
