@@ -241,7 +241,7 @@ void mergeM(MusiciansDetails* a1, int n1, MusiciansDetails* a2, int n2, Musician
 	{
 		if (importance == 1) // 1 - important
 		{
-			if (a1[ind1].askedPrice > a2[ind2].askedPrice)
+			if (a1[ind1].askedPrice > a2[ind2].askedPrice) 
 			{
 				res[resInd] = a1[ind1];
 				ind1++;
@@ -254,7 +254,7 @@ void mergeM(MusiciansDetails* a1, int n1, MusiciansDetails* a2, int n2, Musician
 		}
 		else  // importance == 0 // 0 - not important
 		{
-			if (a1->askedPrice < a2->askedPrice) 
+			if (a1[ind1].askedPrice < a2[ind2].askedPrice) 
 			{
 				res[resInd] = a1[ind1];
 				ind1++;
@@ -518,7 +518,6 @@ void freeAll(InstrumentTree instruments, Musician** MusiciansGroup, int musician
 		}
 		free(MusiciansGroup[i]);
 	}
-
 	free(MusiciansGroup);
 	free(MusiciansCollection);
 
