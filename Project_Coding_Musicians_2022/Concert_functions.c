@@ -84,7 +84,6 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	while (name != NULL)
 	{
-		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
 		token = strtok(NULL, seps);
 		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, name), token, strtok(NULL, seps)[0]);
 		name = strtok(NULL, seps);
