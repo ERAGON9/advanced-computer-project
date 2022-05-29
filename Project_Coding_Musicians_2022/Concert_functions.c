@@ -84,7 +84,6 @@ void newConcert(Concert* theEvent, InstrumentTree instrumentsTr, char* descripti
 
 	while (name != NULL)
 	{
-		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, token), strtok(NULL, seps), strtok(NULL, seps)[0]);
 		token = strtok(NULL, seps);
 		insertDataToEndList(&(theEvent->instrument), findInsId(instrumentsTr, name), token, strtok(NULL, seps)[0]);
 		name = strtok(NULL, seps);
@@ -101,7 +100,7 @@ void makeEmptyList(CIList* new)
 
 // This function receives the strings 'hours' and 'minutes' (self explanatory) and converts them to 
 // a float number, represent the given time in decimal form.
-float convertHour(char* minutes, char* hours)
+float convertHour(char* hours, char* minutes)
 {
 	float res, tmp;
 	
@@ -156,7 +155,6 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 //  according to the price the musician ask and the importance of the instrument at that concert.
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
-	int importance;
 	CIListNode* curr = aEvent.instrument.head;
 	int importance;
 
@@ -331,7 +329,7 @@ void setUpConcert(Concert show, Musician*** MusicianCollection, int* sizes, Tree
 	}
 
 	if (proceed == false)
-		printf("Could not find musicians for the concert %s", show.name);
+		printf("Could not find musicians for the concert %s\n", show.name);
 
 	else // proceed == true
 		printConcert(show, taken, logSize, root);
@@ -386,7 +384,7 @@ bool addMusicians(Musician** options, int optionArrSize, Musician** busy, int* l
 void printConcert(Concert theEvent, Musician* busy, int size, TreeNode* root)
 {
 	int hours = (int)theEvent.date_of_concert.hour;
-	int minutes = ((int)(theEvent.date_of_concert.hour) % 1) * HOUR;
+	int minutes = (int)((theEvent.date_of_concert.hour - (int)theEvent.date_of_concert.hour) * HOUR);
 	CIListNode* curr = theEvent.instrument.head;
 	char* instName;
 	int i, j, inx = ZERO, tmpPrice, sumPrice = ZERO;
@@ -474,6 +472,7 @@ int findAskedPrice(Musician artist, int id)
 	{
 		if (curr->data.insId == id) 
 			return curr->data.price;
+		curr = curr->next;
 	}
 
 	return NOT_FOUND;
