@@ -156,7 +156,6 @@ void insertNodeToEndList(CIList* lst, CIListNode* new)
 void reorderCollection(Concert aEvent, Musician*** MusicianCollection, int* sizes) 
 {
 	CIListNode* curr = aEvent.instrument.head;
-	int importance;
 
 	while (curr != NULL) 
 	{

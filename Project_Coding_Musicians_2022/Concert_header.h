@@ -52,7 +52,7 @@ char* readLineFromTheUser();
 
 void newConcert(Concert* theEvent, InstrumentTree tools, char* description);
 
-float convertHour(char* hours, char* minutes);
+float convertHour(char* minutes, char* hours);
 
 void makeEmptyList(CIList* new);
 
